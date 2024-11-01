@@ -1,11 +1,15 @@
 ﻿namespace SchoolHub.Web.Areas.Administration.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using SchoolHub.Common;
     using SchoolHub.Services.Data;
+    using SchoolHub.Web.Controllers;
     using SchoolHub.Web.ViewModels.Administration.Dashboard;
 
-    using Microsoft.AspNetCore.Mvc;
-
-    public class DashboardController : AdministrationController
+    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    [Area("Administration")]
+    public class DashboardController : BaseController
     {
         private readonly ISettingsService settingsService;
 

@@ -3,12 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Mvc;
+
     using SchoolHub.Data.Common.Repositories;
     using SchoolHub.Data.Models;
     using SchoolHub.Services.Data;
     using SchoolHub.Web.ViewModels.Settings;
-
-    using Microsoft.AspNetCore.Mvc;
 
     public class SettingsController : BaseController
     {

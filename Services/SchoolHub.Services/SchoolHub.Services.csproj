@@ -18,4 +18,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\SchoolHub.Data.Models\SchoolHub.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\SchoolHub.Data\SchoolHub.Data.csproj" />
+    <ProjectReference Include="..\..\Web\SchoolHub.Web.ViewModels\SchoolHub.Web.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

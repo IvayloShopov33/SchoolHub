@@ -10,11 +10,11 @@
     {
         public IActionResult Index()
         {
-            return this.View();
-        }
+            if (this.GetUserId() != null)
+            {
+                return this.RedirectToAction("Index", "School");
+            }
 
-        public IActionResult Privacy()
-        {
             return this.View();
         }
 

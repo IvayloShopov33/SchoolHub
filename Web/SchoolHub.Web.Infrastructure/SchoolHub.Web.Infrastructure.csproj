@@ -18,4 +18,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\SchoolHub.Common\SchoolHub.Common.csproj" />
+  </ItemGroup>
+
 </Project>

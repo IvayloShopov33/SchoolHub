@@ -1,17 +1,7 @@
-﻿namespace SchoolHub.Web
+namespace SchoolHub.Web
 {
+    using System;
     using System.Reflection;
-
-    using SchoolHub.Data;
-    using SchoolHub.Data.Common;
-    using SchoolHub.Data.Common.Repositories;
-    using SchoolHub.Data.Models;
-    using SchoolHub.Data.Repositories;
-    using SchoolHub.Data.Seeding;
-    using SchoolHub.Services.Data;
-    using SchoolHub.Services.Mapping;
-    using SchoolHub.Services.Messaging;
-    using SchoolHub.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -21,11 +11,27 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
 
+    using SchoolHub.Data;
+    using SchoolHub.Data.Common;
+    using SchoolHub.Data.Common.Repositories;
+    using SchoolHub.Data.Models;
+    using SchoolHub.Data.Repositories;
+    using SchoolHub.Data.Seeding;
+    using SchoolHub.Services;
+    using SchoolHub.Services.Data;
+    using SchoolHub.Services.Mapping;
+    using SchoolHub.Services.Messaging;
+    using SchoolHub.Web.ViewModels;
+
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
             ConfigureServices(builder.Services, builder.Configuration);
             var app = builder.Build();
             Configure(app);
@@ -65,6 +71,7 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ISchoolService, SchoolService>();
         }
 
         private static void Configure(WebApplication app)
