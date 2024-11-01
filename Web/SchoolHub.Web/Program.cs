@@ -28,7 +28,7 @@ namespace SchoolHub.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -63,6 +63,8 @@ namespace SchoolHub.Web
 
             services.AddSingleton(configuration);
 
+            services.AddAutoMapper(typeof(Program));
+
             // Data repositories
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -72,6 +74,8 @@ namespace SchoolHub.Web
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ISchoolService, SchoolService>();
+            services.AddTransient<ITeacherService, TeacherService>();
+            services.AddTransient<IStudentService, StudentService>();
         }
 
         private static void Configure(WebApplication app)

@@ -7,7 +7,7 @@
 
     using static SchoolHub.Data.Common.ModelsValidationConstraints;
 
-    public class SchoolFormModel : IMapTo<School>
+    public class SchoolFormModel : IMapTo<School>, IMapFrom<DetailsSchoolViewModel>
     {
         [Required]
         [StringLength(SchoolNameMaxLength, MinimumLength = SchoolNameMinLength)]

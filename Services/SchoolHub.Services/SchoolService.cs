@@ -1,7 +1,10 @@
 ﻿namespace SchoolHub.Services
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
 
     using SchoolHub.Data.Common.Repositories;
     using SchoolHub.Data.Models;
@@ -17,16 +20,47 @@
             this.schoolRepository = schoolRepository;
         }
 
-        public IQueryable All()
-            => this.schoolRepository
-                .All()
-                .Where(x => !x.IsDeleted);
+        public async Task<List<IndexSchoolViewModel>> AllAsync()
+            => await this.schoolRepository
+                .AllAsNoTracking()
+                .Where(x => !x.IsDeleted)
+                .To<IndexSchoolViewModel>()
+                .ToListAsync();
+
+        public async Task<DetailsSchoolViewModel> GetSchoolDetailsByIdAsync(string id)
+            => await this.schoolRepository
+            .AllAsNoTracking()
+            .To<DetailsSchoolViewModel>()
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task AddSchoolAsync(SchoolFormModel formModel)
         {
             var school = AutoMapperConfig.MapperInstance.Map<School>(formModel);
 
             await this.schoolRepository.AddAsync(school);
+            await this.schoolRepository.SaveChangesAsync();
+        }
+
+        public async Task EditSchoolAsync(string id, SchoolFormModel formModel)
+        {
+            var schoolById = await this.schoolRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            schoolById.Name = formModel.Name;
+            schoolById.Address = formModel.Address;
+            schoolById.WebsiteUrl = formModel.WebsiteUrl;
+
+            await this.schoolRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteSchoolAsync(DeleteSchoolViewModel model)
+        {
+            var schoolById = await this.schoolRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            schoolById.IsDeleted = true;
             await this.schoolRepository.SaveChangesAsync();
         }
     }

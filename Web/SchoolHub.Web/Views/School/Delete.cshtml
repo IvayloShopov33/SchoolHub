@@ -1,0 +1,22 @@
+﻿@model DeleteSchoolViewModel
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body text-center">
+                    <h4 class="card-title text-danger mb-4">Confirm Delete</h4>
+                    <p>Are you sure you want to delete the school <strong>@Model.Name</strong>?</p>
+                    <div class="mt-4 d-flex justify-content-around">
+                        <form asp-action="DeleteConfirmed" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

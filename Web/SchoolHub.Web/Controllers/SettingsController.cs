@@ -10,7 +10,7 @@
     using SchoolHub.Services.Data;
     using SchoolHub.Web.ViewModels.Settings;
 
-    public class SettingsController : BaseController
+    public class SettingsController : Controller
     {
         private readonly ISettingsService settingsService;
 

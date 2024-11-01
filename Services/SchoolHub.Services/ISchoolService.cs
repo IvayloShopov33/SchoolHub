@@ -1,14 +1,20 @@
 ﻿namespace SchoolHub.Services
 {
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using SchoolHub.Web.ViewModels.School;
 
     public interface ISchoolService
     {
-        IQueryable All();
+        Task<List<IndexSchoolViewModel>> AllAsync();
+
+        Task<DetailsSchoolViewModel> GetSchoolDetailsByIdAsync(string id);
 
         Task AddSchoolAsync(SchoolFormModel formModel);
+
+        Task EditSchoolAsync(string id, SchoolFormModel formModel);
+
+        Task DeleteSchoolAsync(DeleteSchoolViewModel model);
     }
 }

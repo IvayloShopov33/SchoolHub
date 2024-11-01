@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SchoolHub.Data.Models.School>
+﻿@model IEnumerable<IndexSchoolViewModel>
 
 @{
     ViewData["Title"] = "Schools List";
@@ -13,6 +13,10 @@
                 <th>Name</th>
                 <th>Website</th>
                 <th>Teachers</th>
+                @if (this.User.IsAdmin())
+                {
+                    <th>Add SchoolMember</th>
+                }
                 <th>Actions</th>
             </tr>
         </thead>
@@ -22,13 +26,21 @@
                 <tr>
                     <td>@school.Name</td>
                     <td><a href="@school.WebsiteUrl" target="_blank">@school.WebsiteUrl</a></td>
-                    <td>@school.Teachers.Count</td>
+                    <td>@school.TeachersCount</td>
+                    @if (this.User.IsAdmin())
+                    {
+                        <td>
+                            <a asp-controller="Teacher" asp-action="Add" asp-route-id="@school.Id" class="btn btn-info btn-sm">Teacher</a>
+                            <a asp-controller="Student" asp-action="Add" asp-route-id="@school.Id" class="btn btn-info btn-sm">Student</a>
+                        </td>
+                    }
                     <td>
-                        <a asp-controller="School" asp-action="Details" asp-route-id="@school.Id" class="btn btn-info btn-sm">Details</a>
-                        <a asp-controller="School" asp-action="Edit" asp-route-id="@school.Id" class="btn btn-warning btn-sm">Edit</a>
-                        <form asp-controller="School" asp-action="Delete" asp-route-id="@school.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this school?');">Delete</button>
-                        </form>
+                        <a asp-controller="School" asp-action="Details" asp-route-id="@school.Id" class="btn btn-primary btn-sm">Details</a>
+                        @if (this.User.IsAdmin())
+                        {
+                            <a asp-controller="School" asp-action="Edit" asp-route-id="@school.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-controller="School" asp-action="Delete" asp-route-id="@school.Id" class="btn btn-danger btn-sm">Delete</a>
+                        }
                     </td>
                 </tr>
             }

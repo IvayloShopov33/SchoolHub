@@ -2,15 +2,16 @@
 {
     using System.Diagnostics;
 
-    using SchoolHub.Web.ViewModels;
-
     using Microsoft.AspNetCore.Mvc;
 
-    public class HomeController : BaseController
+    using SchoolHub.Web.Infrastructure;
+    using SchoolHub.Web.ViewModels;
+
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            if (this.GetUserId() != null)
+            if (this.User.GetId() != null)
             {
                 return this.RedirectToAction("Index", "School");
             }

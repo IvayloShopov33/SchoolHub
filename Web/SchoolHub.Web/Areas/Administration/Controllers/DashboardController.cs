@@ -9,7 +9,7 @@
 
     [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     [Area("Administration")]
-    public class DashboardController : BaseController
+    public class DashboardController : Controller
     {
         private readonly ISettingsService settingsService;
 
