@@ -13,7 +13,7 @@
     {
         var userId = this.User.GetId();
         var userIsInRole = this.User.IsAdmin();
-        var userIsTeacher = await this.teacherService.IsTeacher(userId);
+        var userIsTeacher = await this.teacherService.IsTeacherAsync(userId);
         var userIsStudent = await this.studentService.IsStudent(userId);
 
         @if (!userIsInRole && userIsTeacher && !userIsStudent)

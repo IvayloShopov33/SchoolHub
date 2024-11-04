@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     using SchoolHub.Data.Common.Models;
 
@@ -21,17 +20,7 @@
         [MaxLength(SubjectDescriptionMaxLength)]
         public string Description { get; set; } = null!;
 
-        [Required]
-        [ForeignKey(nameof(Class))]
-        public string ClassId { get; set; } = null!;
-
-        public virtual Class Class { get; set; }
-
-        [Required]
-        [ForeignKey(nameof(Teacher))]
-        public string TeacherId { get; set; } = null!;
-
-        public virtual Teacher Teacher { get; set; }
+        public virtual ICollection<Teacher> Teachers { get; set; } = new HashSet<Teacher>();
 
         public virtual ICollection<Topic> Topics { get; set; } = new HashSet<Topic>();
 
@@ -40,5 +29,7 @@
         public virtual ICollection<Absence> Absences { get; set; } = new HashSet<Absence>();
 
         public virtual ICollection<Remark> Remarks { get; set; } = new HashSet<Remark>();
+
+        public virtual ICollection<ClassSubject> ClassesSubjects { get; set; } = new HashSet<ClassSubject>();
     }
 }

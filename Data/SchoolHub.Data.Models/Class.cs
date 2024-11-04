@@ -36,7 +36,7 @@
 
         public virtual Teacher HomeroomTeacher { get; set; }
 
-        public virtual ICollection<Subject> Subjects { get; set; } = new HashSet<Subject>();
+        public virtual ICollection<ClassSubject> ClassesSubjects { get; set; } = new HashSet<ClassSubject>();
 
         public virtual ICollection<Student> Students { get; set; } = new HashSet<Student>();
     }

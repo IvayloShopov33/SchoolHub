@@ -36,7 +36,8 @@
             <a asp-controller="School" asp-action="Index" class="btn btn-secondary">Back to List</a>
             @if (this.User.IsAdmin())
             {
-                <a asp-controller="School" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                <a asp-controller="School" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                <a asp-controller="Teacher" asp-action="Index" asp-route-schoolId="@Model.Id" class="btn btn-primary">All Teachers</a>
             }
         </div>
     </div>

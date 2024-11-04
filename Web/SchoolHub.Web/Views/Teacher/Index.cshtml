@@ -1,0 +1,31 @@
+﻿@model IEnumerable<IndexTeacherViewModel>
+
+@{
+    ViewData["Title"] = "All Teachers";
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Teachers</h2>
+    <div class="row">
+        @foreach (var teacher in Model)
+        {
+            <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@teacher.FullName</h5>
+                        <p class="card-text"><strong>Birth Date:</strong> @teacher.BirthDate</p>
+                        <p class="card-text"><strong>Username:</strong> @(string.IsNullOrEmpty(teacher.Username) ? "N/A" : teacher.Username)</p>
+                        <p class="card-text"><strong>School:</strong> @teacher.School</p>
+                        <p class="card-text"><strong>Class:</strong> @(string.IsNullOrEmpty(teacher.Class) ? "No Class Assigned" : teacher.Class)</p>
+                        <p class="card-text"><strong>Subject:</strong> @teacher.Subject</p>
+                    </div>
+                    @if (this.User.IsAdmin())
+                    {
+                        <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@teacher.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-controller="Teacher" asp-action="Delete" asp-route-id="@teacher.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

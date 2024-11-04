@@ -30,8 +30,8 @@
                     @if (this.User.IsAdmin())
                     {
                         <td>
-                            <a asp-controller="Teacher" asp-action="Add" asp-route-id="@school.Id" class="btn btn-info btn-sm">Teacher</a>
-                            <a asp-controller="Student" asp-action="Add" asp-route-id="@school.Id" class="btn btn-info btn-sm">Student</a>
+                            <a asp-controller="Teacher" asp-action="Add" asp-route-schoolId="@school.Id" class="btn btn-info btn-sm">Teacher</a>
+                            <a asp-controller="Student" asp-action="Add" asp-route-schoolId="@school.Id" class="btn btn-info btn-sm">Student</a>
                         </td>
                     }
                     <td>

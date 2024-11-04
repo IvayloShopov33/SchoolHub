@@ -15,7 +15,7 @@
         public const byte SchoolWebsiteMaxLength = 120;
 
         // Class
-        public const byte ClassNameMinLength = 3;
+        public const byte ClassNameMinLength = 2;
         public const byte ClassNameMaxLength = 50;
 
         // Subject

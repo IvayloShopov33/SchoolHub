@@ -21,9 +21,8 @@
         [Required]
         public DateTime BirthDate { get; set; }
 
-        [Required]
         [ForeignKey(nameof(User))]
-        public string UserId { get; set; } = null!;
+        public string UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 
@@ -34,11 +33,15 @@
         public virtual School School { get; set; }
 
         [ForeignKey(nameof(Class))]
-        public string? ClassId { get; set; }
+        public string ClassId { get; set; }
 
         public virtual Class Class { get; set; }
 
-        public virtual ICollection<Subject> Subjects { get; set; } = new HashSet<Subject>();
+        [Required]
+        [ForeignKey(nameof(Subject))]
+        public int SubjectId { get; set; }
+
+        public virtual Subject Subject { get; set; }
 
         public virtual ICollection<Grade> Grades { get; set; } = new HashSet<Grade>();
 
