@@ -45,7 +45,7 @@
         {
             var schoolById = await this.schoolRepository
                 .All()
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
             schoolById.Name = formModel.Name;
             schoolById.Address = formModel.Address;
@@ -58,7 +58,7 @@
         {
             var schoolById = await this.schoolRepository
                 .All()
-                .FirstOrDefaultAsync(x => x.Id == model.Id);
+                .FirstOrDefaultAsync(x => x.Id == model.Id && !x.IsDeleted);
 
             schoolById.IsDeleted = true;
             await this.schoolRepository.SaveChangesAsync();

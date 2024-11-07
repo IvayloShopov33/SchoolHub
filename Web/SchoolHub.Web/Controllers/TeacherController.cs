@@ -27,11 +27,6 @@
 
         public async Task<IActionResult> Index(string schoolId)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             var teachers = await this.teacherService.AllTeachersAsync(schoolId);
 
             return this.View(teachers);
@@ -39,15 +34,10 @@
 
         public async Task<IActionResult> Add(string schoolId)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             return this.View(new TeacherFormModel
             {
                 SchoolId = schoolId,
-                Classes = await this.classService.GetAllClassesBySchoolId(schoolId),
+                Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(schoolId),
                 Subjects = await this.subjectService.GetAllSubjects(),
             });
         }
@@ -55,15 +45,10 @@
         [HttpPost]
         public async Task<IActionResult> Add(string schoolId, TeacherFormModel formModel)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             if (!this.ModelState.IsValid)
             {
                 formModel.SchoolId = schoolId;
-                formModel.Classes = await this.classService.GetAllClassesBySchoolId(schoolId);
+                formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(schoolId);
                 formModel.Subjects = await this.subjectService.GetAllSubjects();
 
                 return this.View(formModel);
@@ -76,14 +61,9 @@
 
         public async Task<IActionResult> Edit(string id)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
 
-            teacher.Classes = await this.classService.GetAllClassesBySchoolId(teacher.SchoolId);
+            teacher.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(teacher.SchoolId);
             teacher.Subjects = await this.subjectService.GetAllSubjects();
 
             return this.View(teacher);
@@ -92,14 +72,9 @@
         [HttpPost]
         public async Task<IActionResult> Edit(string id, TeacherFormModel formModel)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             if (!this.ModelState.IsValid)
             {
-                formModel.Classes = await this.classService.GetAllClassesBySchoolId(formModel.SchoolId);
+                formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(formModel.SchoolId);
                 formModel.Subjects = await this.subjectService.GetAllSubjects();
 
                 return this.View(formModel);
@@ -112,11 +87,6 @@
 
         public async Task<IActionResult> Delete(string id)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
             var deleteTeacherViewModel = AutoMapperConfig.MapperInstance.Map<DeleteTeacherViewModel>(teacher);
 
@@ -126,11 +96,6 @@
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(DeleteTeacherViewModel formModel)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             await this.teacherService.DeleteTeacherAsync(formModel);
 
             return this.RedirectToAction("Index", new { schoolId = formModel.SchoolId });

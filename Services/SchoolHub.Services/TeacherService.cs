@@ -23,6 +23,15 @@
         public async Task<bool> IsTeacherAsync(string userId)
             => await this.teacherRepository.AllAsNoTracking().AnyAsync(x => x.UserId == userId);
 
+        public async Task<string> GetSchoolIdByTeacherId(string teacherId)
+        {
+            var teacher = await this.teacherRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
+
+            return teacher.SchoolId;
+        }
+
         public async Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId)
             => await this.teacherRepository
                 .All()
@@ -42,7 +51,7 @@
         {
             var teacherById = await this.teacherRepository
                 .All()
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
             teacherById.FullName = formModel.FullName;
             teacherById.BirthDate = formModel.BirthDate;
@@ -56,7 +65,7 @@
         {
             var teacher = await this.teacherRepository
                 .All()
-                .FirstOrDefaultAsync(x => x.Id == model.Id);
+                .FirstOrDefaultAsync(x => x.Id == model.Id && !x.IsDeleted);
 
             teacher.IsDeleted = true;
             await this.teacherRepository.SaveChangesAsync();
@@ -65,7 +74,7 @@
         public async Task<TeacherFormModel> GetTeacherByIdAsync(string id)
             => await this.teacherRepository
                 .All()
-                .Where(x => x.Id == id)
+                .Where(x => x.Id == id && !x.IsDeleted)
                 .To<TeacherFormModel>()
                 .FirstOrDefaultAsync();
     }

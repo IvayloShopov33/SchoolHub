@@ -9,6 +9,8 @@
     {
         Task<bool> IsTeacherAsync(string userId);
 
+        Task<string> GetSchoolIdByTeacherId(string teacherId);
+
         Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId);
 
         Task AddTeacherAsync(TeacherFormModel formModel);

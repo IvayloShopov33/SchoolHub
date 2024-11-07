@@ -1,0 +1,32 @@
+﻿@model IEnumerable<IndexClassViewModel>
+
+@{
+    ViewData["Title"] = "All Classes";
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Classes</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var classModel in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary font-weight-bold">@classModel.Name</h5>
+                        <p class="card-text">
+                            <strong>School:</strong> @classModel.School<br />
+                            <strong>Homeroom Teacher:</strong> @classModel.HomeroomTeacher<br />
+                            <strong>Start Date:</strong> @classModel.StartedOn<br />
+                            <strong>End Date:</strong> @classModel.EndingOn
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-action="Details" asp-route-id="@classModel.Id" class="btn btn-outline-primary btn-sm">View Details</a>
+                        <a asp-action="Edit" asp-route-classId="@classModel.Id" asp-route-teacherId="@classModel.HomeroomTeacherId" class="btn btn-outline-secondary btn-sm mx-2">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@classModel.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
