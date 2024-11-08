@@ -24,7 +24,14 @@
         public async Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId)
             => await this.classRepository
                 .All()
-                .Where(x => !x.IsDeleted && x.SchoolId == schoolId)
+                .Where(x => !x.IsDeleted && x.SchoolId == schoolId && x.HomeroomTeacherId == null)
+                .To<TeacherClassFormModel>()
+                .ToListAsync();
+
+        public async Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId, string homeroomTeacherId)
+            => await this.classRepository
+                .All()
+                .Where(x => !x.IsDeleted && x.SchoolId == schoolId && x.HomeroomTeacherId == homeroomTeacherId)
                 .To<TeacherClassFormModel>()
                 .ToListAsync();
 
@@ -41,6 +48,25 @@
                 .Where(x => x.Id == id && !x.IsDeleted)
                 .To<ClassFormModel>()
                 .FirstOrDefaultAsync();
+
+        public async Task<string> GetSchoolIdByClassId(string classId)
+        {
+            var @class = await this.classRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == classId && !x.IsDeleted);
+
+            return @class.SchoolId;
+        }
+
+        public async Task SetHomeroomTeacherIdByClassId(string classId, string homeroomTeacherId)
+        {
+            var @class = await this.classRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == classId && !x.IsDeleted);
+
+            @class.HomeroomTeacherId = homeroomTeacherId;
+            await this.classRepository.SaveChangesAsync();
+        }
 
         public async Task AddClassAsync(ClassFormModel formModel)
         {

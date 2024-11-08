@@ -39,12 +39,14 @@
                 .To<IndexTeacherViewModel>()
                 .ToListAsync();
 
-        public async Task AddTeacherAsync(TeacherFormModel formModel)
+        public async Task<string> AddTeacherAsync(TeacherFormModel formModel)
         {
             var teacher = AutoMapperConfig.MapperInstance.Map<Teacher>(formModel);
 
             await this.teacherRepository.AddAsync(teacher);
             await this.teacherRepository.SaveChangesAsync();
+
+            return teacher.Id;
         }
 
         public async Task EditTeacherAsync(string id, TeacherFormModel formModel)

@@ -21,6 +21,6 @@
 
         public string SchoolId { get; set; } = null!;
 
-        public string HomeroomTeacherId { get; set; } = null!;
+        public string? HomeroomTeacherId { get; set; }
     }
 }

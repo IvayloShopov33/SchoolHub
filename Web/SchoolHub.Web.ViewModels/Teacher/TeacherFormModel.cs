@@ -10,6 +10,8 @@
 
     public class TeacherFormModel : IMapTo<SchoolHub.Data.Models.Teacher>, IMapFrom<SchoolHub.Data.Models.Teacher>
     {
+        public string Id { get; set; }
+
         [Required]
         [StringLength(SchoolMemberFullNameMaxLength, MinimumLength = SchoolMemberFullNameMinLength)]
         public string FullName { get; set; } = null!;

@@ -13,7 +13,7 @@
 
         Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId);
 
-        Task AddTeacherAsync(TeacherFormModel formModel);
+        Task<string> AddTeacherAsync(TeacherFormModel formModel);
 
         Task EditTeacherAsync(string id, TeacherFormModel formModel);
 

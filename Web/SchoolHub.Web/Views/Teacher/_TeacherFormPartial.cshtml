@@ -23,7 +23,6 @@
             <div class="form-group mb-3">
                 <label asp-for="ClassId" class="font-weight-bold">Class</label>
                 <select asp-for="ClassId" class="form-control">
-                    <option value="">-- Select Class --</option>
                     @foreach (var classItem in Model.Classes)
                     {
                         @if (classItem.Id == Model.ClassId)
@@ -44,7 +43,6 @@
             <div class="form-group mb-3">
                 <label asp-for="SubjectId" class="font-weight-bold">Subject</label>
                 <select asp-for="SubjectId" class="form-control">
-                    <option value="">-- Select Subject --</option>
                     @foreach (var subject in Model.Subjects)
                     {
                         @if (subject.Id == Model.SubjectId)

@@ -10,9 +10,15 @@
     {
         Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId);
 
+        Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId, string homeroomTeacherId);
+
         Task<List<IndexClassViewModel>> GetAllClassesBySchoolIdAsync(string schoolId);
 
         Task<ClassFormModel> GetClassByIdAsync(string id);
+
+        Task<string> GetSchoolIdByClassId(string classId);
+
+        Task SetHomeroomTeacherIdByClassId(string classId, string homeroomTeacherId);
 
         Task AddClassAsync(ClassFormModel formModel);
 

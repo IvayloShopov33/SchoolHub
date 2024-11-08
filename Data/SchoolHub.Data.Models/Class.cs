@@ -30,9 +30,8 @@
 
         public virtual School School { get; set; }
 
-        [Required]
         [ForeignKey(nameof(HomeroomTeacher))]
-        public string HomeroomTeacherId { get; set; } = null!;
+        public string? HomeroomTeacherId { get; set; }
 
         public virtual Teacher HomeroomTeacher { get; set; }
 

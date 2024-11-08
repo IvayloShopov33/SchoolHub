@@ -8,7 +8,6 @@
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
-    using SchoolHub.Web.Infrastructure;
     using SchoolHub.Web.ViewModels.Teacher;
 
     [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
@@ -54,7 +53,8 @@
                 return this.View(formModel);
             }
 
-            await this.teacherService.AddTeacherAsync(formModel);
+            var teacherId = await this.teacherService.AddTeacherAsync(formModel);
+            await this.classService.SetHomeroomTeacherIdByClassId(formModel.ClassId, teacherId);
 
             return this.RedirectToAction("Details", "School", new { id = schoolId });
         }
@@ -63,7 +63,7 @@
         {
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
 
-            teacher.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(teacher.SchoolId);
+            teacher.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(teacher.SchoolId, teacher.Id);
             teacher.Subjects = await this.subjectService.GetAllSubjects();
 
             return this.View(teacher);
@@ -74,7 +74,7 @@
         {
             if (!this.ModelState.IsValid)
             {
-                formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(formModel.SchoolId);
+                formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(formModel.SchoolId, formModel.Id);
                 formModel.Subjects = await this.subjectService.GetAllSubjects();
 
                 return this.View(formModel);
