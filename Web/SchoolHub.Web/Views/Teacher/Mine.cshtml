@@ -1,0 +1,26 @@
+﻿@model MyClassViewModel
+
+@{
+    ViewData["Title"] = "My Class";
+}
+
+<h2 class="text-center my-4">@ViewData["Title"]</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0 text-center">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.Name)</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>School:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.School)</p>
+                    <p class="card-text"><strong>Homeroom Teacher:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.HomeroomTeacher)</p>
+                    <p class="card-text"><strong>Started On:</strong> @Model.StartedOn</p>
+                    <p class="card-text"><strong>Ending On:</strong> @Model.EndingOn</p>
+                    <p class="card-text"><strong>Students:</strong> @Model.StudentsCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

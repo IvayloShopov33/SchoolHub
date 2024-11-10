@@ -1,5 +1,7 @@
 ﻿namespace SchoolHub.Web.Controllers
 {
+    using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -8,9 +10,10 @@
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
+    using SchoolHub.Web.Infrastructure;
     using SchoolHub.Web.ViewModels.Teacher;
 
-    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    [Authorize]
     public class TeacherController : Controller
     {
         private readonly ITeacherService teacherService;
@@ -24,23 +27,60 @@
             this.subjectService = subjectService;
         }
 
-        public async Task<IActionResult> Index(string schoolId)
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Index(string schoolId, int page = 1, string searchTerm = "")
         {
+            const int PageSize = 3;
             var teachers = await this.teacherService.AllTeachersAsync(schoolId);
 
-            return this.View(teachers);
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                teachers = teachers
+                    .Where(t => t.FullName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var paginatedTeachers = teachers
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            var totalTeachers = teachers.Count;
+            var totalPages = (int)Math.Ceiling((double)totalTeachers / PageSize);
+
+            return this.View(new PaginatedIndexTeacherViewModel
+            {
+                Teachers = paginatedTeachers,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                SchoolId = schoolId,
+                SearchTerm = searchTerm,
+            });
         }
 
-        public async Task<IActionResult> Add(string schoolId)
+        public async Task<IActionResult> Mine(string userId)
         {
-            return this.View(new TeacherFormModel
+            if (!this.User.IsAdmin() && !await this.teacherService.IsTeacherAsync(userId))
+            {
+                return this.Unauthorized();
+            }
+
+            var teacher = await this.teacherService.GetTeacherByUserIdAsync(userId);
+            var teacherClassViewModel = await this.classService.GetTeacherClassByIdAsync(teacher.ClassId);
+
+            return this.View(teacherClassViewModel);
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Add(string schoolId)
+            => this.View(new TeacherFormModel
             {
                 SchoolId = schoolId,
                 Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(schoolId),
                 Subjects = await this.subjectService.GetAllSubjects(),
             });
-        }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> Add(string schoolId, TeacherFormModel formModel)
         {
@@ -54,11 +94,38 @@
             }
 
             var teacherId = await this.teacherService.AddTeacherAsync(formModel);
-            await this.classService.SetHomeroomTeacherIdByClassId(formModel.ClassId, teacherId);
+            if (formModel.ClassId != null)
+            {
+                await this.classService.SetHomeroomTeacherIdByClassId(formModel.ClassId, teacherId);
+            }
 
             return this.RedirectToAction("Details", "School", new { id = schoolId });
         }
 
+        public IActionResult Become()
+            => this.View(new BecomeTeacherFormModel { Email = this.User.GetEmail() });
+
+        [HttpPost]
+        public async Task<IActionResult> Become(BecomeTeacherFormModel formModel)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(new BecomeTeacherFormModel { Email = this.User.GetEmail() });
+            }
+
+            var teacherUserId = await this.teacherService.SetTeacherUserByFullNameAndBirthDateAsync(this.User.GetId(), formModel.FullName, formModel.BirthDate);
+
+            if (teacherUserId == null)
+            {
+                this.ModelState.AddModelError(nameof(formModel.BirthDate), "Invalid Full Name or Birth Date.");
+
+                return this.View(new BecomeTeacherFormModel { Email = this.User.GetEmail() });
+            }
+
+            return this.RedirectToAction("Mine", new { userId = teacherUserId });
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Edit(string id)
         {
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
@@ -69,6 +136,7 @@
             return this.View(teacher);
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> Edit(string id, TeacherFormModel formModel)
         {
@@ -85,6 +153,7 @@
             return this.RedirectToAction("Index", new { schoolId = formModel.SchoolId });
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
@@ -93,6 +162,7 @@
             return this.View(deleteTeacherViewModel);
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(DeleteTeacherViewModel formModel)
         {

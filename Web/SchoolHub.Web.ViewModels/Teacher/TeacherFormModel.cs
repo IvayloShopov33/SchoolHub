@@ -4,11 +4,13 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using AutoMapper;
+
     using SchoolHub.Services.Mapping;
 
     using static SchoolHub.Data.Common.ModelsValidationConstraints;
 
-    public class TeacherFormModel : IMapTo<SchoolHub.Data.Models.Teacher>, IMapFrom<SchoolHub.Data.Models.Teacher>
+    public class TeacherFormModel : IMapTo<SchoolHub.Data.Models.Teacher>, IMapFrom<SchoolHub.Data.Models.Teacher>, IHaveCustomMappings
     {
         public string Id { get; set; }
 
@@ -30,5 +32,11 @@
         public int SubjectId { get; set; }
 
         public virtual ICollection<TeacherSubjectFormModel> Subjects { get; set; } = new HashSet<TeacherSubjectFormModel>();
+
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration.CreateMap<TeacherFormModel, SchoolHub.Data.Models.Teacher>()
+                .ForMember(x => x.Id, mo => mo.Ignore());
+        }
     }
 }

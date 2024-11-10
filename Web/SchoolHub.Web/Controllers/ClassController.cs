@@ -1,5 +1,7 @@
 ﻿namespace SchoolHub.Web.Controllers
 {
+    using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -22,17 +24,38 @@
             this.teacherService = teacherService;
         }
 
-        public async Task<IActionResult> Index(string schoolId)
+        public async Task<IActionResult> Index(string schoolId, int page = 1, string searchTerm = "")
         {
+            const int PageSize = 3;
             var allClasses = await this.classService.GetAllClassesBySchoolIdAsync(schoolId);
 
-            return this.View(allClasses);
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                allClasses = allClasses
+                    .Where(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var paginatedClasses = allClasses
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            var totalClasses = allClasses.Count;
+            var totalPages = (int)Math.Ceiling((double)totalClasses / PageSize);
+
+            return this.View(new PaginatedIndexClassViewModel
+            {
+                Classes = paginatedClasses,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                SchoolId = schoolId,
+                SearchTerm = searchTerm,
+            });
         }
 
         public IActionResult Add(string teacherId)
-        {
-            return this.View(new ClassFormModel { HomeroomTeacherId = teacherId });
-        }
+            => this.View(new ClassFormModel { HomeroomTeacherId = teacherId });
 
         [HttpPost]
         public async Task<IActionResult> Add(string teacherId, ClassFormModel formModel)
@@ -49,13 +72,19 @@
 
             if (!this.ModelState.IsValid || formModel.StartedOn > formModel.EndingOn)
             {
+                if (formModel.StartedOn > formModel.EndingOn)
+                {
+                    this.ModelState.AddModelError(nameof(formModel.EndingOn), "The End Date cannot be before the Start Date.");
+                }
+
                 formModel.HomeroomTeacherId = teacherId;
                 formModel.SchoolId = schoolId;
 
                 return this.View(formModel);
             }
 
-            await this.classService.AddClassAsync(formModel);
+            var classId = await this.classService.AddClassAsync(formModel);
+            await this.teacherService.SetClassIdByHomeroomTeacherId(teacherId, classId);
 
             return this.RedirectToAction("Index", new { schoolId = schoolId });
         }
@@ -72,6 +101,11 @@
 
             if (!this.ModelState.IsValid || formModel.StartedOn > formModel.EndingOn)
             {
+                if (formModel.StartedOn > formModel.EndingOn)
+                {
+                    this.ModelState.AddModelError(nameof(formModel.EndingOn), "The End Date cannot be before the Start Date.");
+                }
+
                 formModel.SchoolId = schoolId;
 
                 return this.View("Add", formModel);
@@ -107,6 +141,11 @@
 
             if (!this.ModelState.IsValid || formModel.StartedOn > formModel.EndingOn)
             {
+                if (formModel.StartedOn > formModel.EndingOn)
+                {
+                    this.ModelState.AddModelError(nameof(formModel.EndingOn), "The End Date cannot be before the Start Date.");
+                }
+
                 formModel.HomeroomTeacherId = teacherId;
                 formModel.SchoolId = schoolId;
 

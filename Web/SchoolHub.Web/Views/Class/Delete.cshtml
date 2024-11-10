@@ -10,7 +10,7 @@
             <div class="card shadow-sm border-danger">
                 <div class="card-body text-center">
                     <h3 class="text-danger mb-3">Delete Class</h3>
-                    <p>Are you sure you want to delete the class <strong>@Model.Name</strong>?</p>
+                    <p>Are you sure you want to delete the class <strong>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.Name)</strong>?</p>
                     <p>This action cannot be undone.</p>
                     <div class="mt-4">
                         <form asp-action="DeleteConfirmed" method="post">

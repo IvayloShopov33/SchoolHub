@@ -4,20 +4,20 @@
     ViewBag.Title = $"{Model.Name}";
 }
 
-<h2 class="text-center">@ViewBag.Title</h2>
+<h2 class="text-center">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(ViewBag.Title)</h2>
 <hr />
 
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white text-center">
-            <h2>@Model.Name</h2>
+            <h2>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.Name)</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <h5 class="text-muted">School Details</h5>
                     <hr />
-                    <p><strong>Address:</strong> @Model.Address</p>
+                    <p><strong>Address:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.Address)</p>
                     <p>
                         <strong>@Html.DisplayNameFor(m => m.WebsiteUrl):</strong>
                         <a href="@Model.WebsiteUrl" target="_blank">@Model.WebsiteUrl</a>

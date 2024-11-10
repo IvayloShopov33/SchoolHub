@@ -49,6 +49,13 @@
                 .To<ClassFormModel>()
                 .FirstOrDefaultAsync();
 
+        public async Task<MyClassViewModel> GetTeacherClassByIdAsync(string id)
+            => await this.classRepository
+                .All()
+                .Where(x => x.Id == id && !x.IsDeleted)
+                .To<MyClassViewModel>()
+                .FirstOrDefaultAsync();
+
         public async Task<string> GetSchoolIdByClassId(string classId)
         {
             var @class = await this.classRepository
@@ -68,12 +75,14 @@
             await this.classRepository.SaveChangesAsync();
         }
 
-        public async Task AddClassAsync(ClassFormModel formModel)
+        public async Task<string> AddClassAsync(ClassFormModel formModel)
         {
             var @class = AutoMapperConfig.MapperInstance.Map<Class>(formModel);
 
             await this.classRepository.AddAsync(@class);
             await this.classRepository.SaveChangesAsync();
+
+            return @class.Id;
         }
 
         public async Task EditClassByIdAsync(string id, ClassFormModel formModel)

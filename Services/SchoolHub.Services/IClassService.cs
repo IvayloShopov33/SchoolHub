@@ -16,11 +16,13 @@
 
         Task<ClassFormModel> GetClassByIdAsync(string id);
 
+        Task<MyClassViewModel> GetTeacherClassByIdAsync(string id);
+
         Task<string> GetSchoolIdByClassId(string classId);
 
         Task SetHomeroomTeacherIdByClassId(string classId, string homeroomTeacherId);
 
-        Task AddClassAsync(ClassFormModel formModel);
+        Task<string> AddClassAsync(ClassFormModel formModel);
 
         Task EditClassByIdAsync(string id, ClassFormModel formModel);
 

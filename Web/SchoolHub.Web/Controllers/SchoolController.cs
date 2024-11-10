@@ -8,7 +8,6 @@
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
-    using SchoolHub.Web.Infrastructure;
     using SchoolHub.Web.ViewModels.School;
 
     public class SchoolController : Controller
@@ -38,14 +37,7 @@
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public IActionResult Add()
-        {
-            if (!this.User.IsAdmin())
-            {
-                return this.BadRequest();
-            }
-
-            return this.View();
-        }
+            => this.View();
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
@@ -64,11 +56,6 @@
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Edit(string id)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.BadRequest();
-            }
-
             var school = await this.schoolService.GetSchoolDetailsByIdAsync(id);
             var schoolFormModel = AutoMapperConfig.MapperInstance.Map<SchoolFormModel>(school);
 
@@ -79,11 +66,6 @@
         [HttpPost]
         public async Task<IActionResult> Edit(string id, SchoolFormModel school)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             if (!this.ModelState.IsValid)
             {
                 return this.View(school);
@@ -97,11 +79,6 @@
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             var school = await this.schoolService.GetSchoolDetailsByIdAsync(id);
             var deleteSchoolViewModel = AutoMapperConfig.MapperInstance.Map<DeleteSchoolViewModel>(school);
 
@@ -112,11 +89,6 @@
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(DeleteSchoolViewModel formModel)
         {
-            if (!this.User.IsAdmin())
-            {
-                return this.Unauthorized();
-            }
-
             await this.schoolService.DeleteSchoolAsync(formModel);
 
             return this.RedirectToAction("Index");

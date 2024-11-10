@@ -23,15 +23,22 @@
             <div class="form-group mb-3">
                 <label asp-for="ClassId" class="font-weight-bold">Class</label>
                 <select asp-for="ClassId" class="form-control">
-                    @foreach (var classItem in Model.Classes)
+                    @if (!Model.Classes.Any())
                     {
-                        @if (classItem.Id == Model.ClassId)
+                        <option value="" disabled selected>No classes available</option>
+                    }
+                    else
+                    {
+                        @foreach (var classItem in Model.Classes)
                         {
-                            <option value="@classItem.Id" selected>@classItem.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@classItem.Id">@classItem.Name</option>
+                            if (classItem.Id == Model.ClassId)
+                            {
+                                <option value="@classItem.Id" selected>@classItem.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@classItem.Id">@classItem.Name</option>
+                            }
                         }
                     }
                 </select>

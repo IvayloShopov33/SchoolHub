@@ -12,29 +12,29 @@
     @if (this.SignInManager.IsSignedIn(this.User))
     {
         var userId = this.User.GetId();
-        var userIsInRole = this.User.IsAdmin();
+        var userIsAdmin = this.User.IsAdmin();
         var userIsTeacher = await this.teacherService.IsTeacherAsync(userId);
         var userIsStudent = await this.studentService.IsStudent(userId);
 
-        @if (!userIsInRole && userIsTeacher && !userIsStudent)
+        @if (!userIsAdmin && userIsTeacher && !userIsStudent)
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Teacher" asp-action="Mine">My Classes</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="Mine" asp-route-userId="@userId">My Class</a>
             </li>
         }
-        else if (!userIsInRole && !userIsTeacher && userIsStudent)
+        else if (!userIsAdmin && !userIsTeacher && userIsStudent)
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-controller="Student" asp-action="Mine">My Classes</a>
             </li>
         }
-        else if (!userIsInRole && !userIsTeacher && !userIsStudent)
+        else if (!userIsAdmin && !userIsTeacher && !userIsStudent)
         {
             <li class="nav-item">
-                <a asp-controller="Teacher" asp-action="Become" class="nav-link text-dark">Become a Teacher</a>
+                <a asp-area="" asp-controller="Teacher" asp-action="Become" class="nav-link text-dark">Become a Teacher</a>
             </li>
             <li class="nav-item">
-                <a asp-controller="Student" asp-action="Become" class="nav-link text-dark">Become a Student</a>
+                <a asp-area="" asp-controller="Student" asp-action="Become" class="nav-link text-dark">Become a Student</a>
             </li>
         }
 

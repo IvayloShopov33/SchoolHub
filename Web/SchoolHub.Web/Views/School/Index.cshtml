@@ -24,7 +24,7 @@
             @foreach (var school in Model)
             {
                 <tr>
-                    <td>@school.Name</td>
+                    <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(school.Name)</td>
                     <td><a href="@school.WebsiteUrl" target="_blank">@school.WebsiteUrl</a></td>
                     <td>@school.TeachersCount</td>
                     @if (this.User.IsAdmin())
