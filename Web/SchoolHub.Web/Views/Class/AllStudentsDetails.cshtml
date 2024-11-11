@@ -1,0 +1,61 @@
+﻿@model ClassWithStudentsViewModel
+
+@{
+    ViewData["Title"] = "All Students";
+
+    var number = 1;
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">All Students of Class - @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.Name)</h2>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            @if (Model.Students == null || !Model.Students.Any())
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    No students are enrolled in this class yet.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Number</th>
+                                <th scope="col">Full Name</th>
+                                <th scope="col">Birth Date</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var student in Model.Students)
+                            {
+                                <tr>
+                                    <td>@number</td>
+                                    <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.FullName)</td>
+                                    <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.BirthDate)</td>
+                                    <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.Username)</td>
+                                    <td class="text-center">
+                                        @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
+                                        {
+                                            <a asp-controller="Student" asp-action="Edit" asp-route-id="@student.Id" class="btn btn-outline-warning btn-sm">Edit</a>
+                                        }
+                                        @if (this.User.IsAdmin())
+                                        {
+                                            <a asp-controller="Student" asp-action="Delete" asp-route-id="@student.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                                        }
+                                    </td>
+                                </tr>
+
+                                number++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

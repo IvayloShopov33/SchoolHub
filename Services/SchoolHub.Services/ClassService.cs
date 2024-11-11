@@ -10,6 +10,7 @@
     using SchoolHub.Data.Models;
     using SchoolHub.Services.Mapping;
     using SchoolHub.Web.ViewModels.Class;
+    using SchoolHub.Web.ViewModels.Student;
     using SchoolHub.Web.ViewModels.Teacher;
 
     public class ClassService : IClassService
@@ -35,11 +36,18 @@
                 .To<TeacherClassFormModel>()
                 .ToListAsync();
 
-        public async Task<List<IndexClassViewModel>> GetAllClassesBySchoolIdAsync(string schoolId)
+        public IQueryable<Class> GetAllClassesBySchoolIdAsync(string schoolId)
+            => this.classRepository
+                .All()
+                .Where(x => !x.IsDeleted && x.SchoolId == schoolId);
+
+        public async Task<List<IndexStudentViewModel>> GetAllStudentsByClassIdAsync(string classId)
             => await this.classRepository
                 .All()
-                .Where(x => !x.IsDeleted && x.SchoolId == schoolId)
-                .To<IndexClassViewModel>()
+                .Where(x => x.Id == classId && !x.IsDeleted)
+                .OrderBy(x => x.Name)
+                .SelectMany(x => x.Students)
+                .To<IndexStudentViewModel>()
                 .ToListAsync();
 
         public async Task<ClassFormModel> GetClassByIdAsync(string id)
@@ -98,7 +106,7 @@
             await this.classRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteClassAsync(DeleteClassFormModel model)
+        public async Task DeleteClassAsync(DeleteClassViewModel model)
         {
             var @class = await this.classRepository
                 .All()

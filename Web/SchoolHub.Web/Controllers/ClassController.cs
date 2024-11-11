@@ -6,13 +6,13 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-
+    using Microsoft.EntityFrameworkCore;
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
     using SchoolHub.Web.ViewModels.Class;
 
-    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    [Authorize]
     public class ClassController : Controller
     {
         private readonly IClassService classService;
@@ -24,10 +24,13 @@
             this.teacherService = teacherService;
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Index(string schoolId, int page = 1, string searchTerm = "")
         {
             const int PageSize = 3;
-            var allClasses = await this.classService.GetAllClassesBySchoolIdAsync(schoolId);
+            var allClasses = await this.classService.GetAllClassesBySchoolIdAsync(schoolId)
+                .To<IndexClassViewModel>()
+                .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -54,9 +57,21 @@
             });
         }
 
+        public async Task<IActionResult> AllStudentsDetails(string id)
+        {
+            var classById = await this.classService.GetClassByIdAsync(id);
+
+            var classWithStudentsViewModel = AutoMapperConfig.MapperInstance.Map<ClassWithStudentsViewModel>(classById);
+            classWithStudentsViewModel.Students = await this.classService.GetAllStudentsByClassIdAsync(id);
+
+            return this.View(classWithStudentsViewModel);
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public IActionResult Add(string teacherId)
             => this.View(new ClassFormModel { HomeroomTeacherId = teacherId });
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> Add(string teacherId, ClassFormModel formModel)
         {
@@ -89,11 +104,13 @@
             return this.RedirectToAction("Index", new { schoolId = schoolId });
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public IActionResult AddBySchool(string schoolId)
         {
             return this.View("Add", new ClassFormModel { SchoolId = schoolId });
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> AddBySchool(string schoolId, ClassFormModel formModel)
         {
@@ -116,6 +133,7 @@
             return this.RedirectToAction("Index", new { schoolId });
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Edit(string classId, string teacherId)
         {
             var classById = await this.classService.GetClassByIdAsync(classId);
@@ -126,6 +144,7 @@
             return this.View(classById);
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         public async Task<IActionResult> Edit(string classId, string teacherId, ClassFormModel formModel)
         {
@@ -157,16 +176,18 @@
             return this.RedirectToAction("Index", new { schoolId = schoolId });
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
             var classById = await this.classService.GetClassByIdAsync(id);
-            var deleteClassFormModel = AutoMapperConfig.MapperInstance.Map<DeleteClassFormModel>(classById);
+            var deleteClassViewModel = AutoMapperConfig.MapperInstance.Map<DeleteClassViewModel>(classById);
 
-            return this.View(deleteClassFormModel);
+            return this.View(deleteClassViewModel);
         }
 
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(DeleteClassFormModel formModel)
+        public async Task<IActionResult> DeleteConfirmed(DeleteClassViewModel formModel)
         {
             await this.classService.DeleteClassAsync(formModel);
 

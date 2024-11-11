@@ -1,9 +1,12 @@
 ﻿namespace SchoolHub.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
+    using SchoolHub.Data.Models;
     using SchoolHub.Web.ViewModels.Class;
+    using SchoolHub.Web.ViewModels.Student;
     using SchoolHub.Web.ViewModels.Teacher;
 
     public interface IClassService
@@ -12,7 +15,9 @@
 
         Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId, string homeroomTeacherId);
 
-        Task<List<IndexClassViewModel>> GetAllClassesBySchoolIdAsync(string schoolId);
+        IQueryable<Class> GetAllClassesBySchoolIdAsync(string schoolId);
+
+        Task<List<IndexStudentViewModel>> GetAllStudentsByClassIdAsync(string classId);
 
         Task<ClassFormModel> GetClassByIdAsync(string id);
 
@@ -26,6 +31,6 @@
 
         Task EditClassByIdAsync(string id, ClassFormModel formModel);
 
-        Task DeleteClassAsync(DeleteClassFormModel model);
+        Task DeleteClassAsync(DeleteClassViewModel model);
     }
 }

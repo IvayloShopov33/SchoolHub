@@ -2,7 +2,7 @@
 {
     using SchoolHub.Services.Mapping;
 
-    public class DeleteClassFormModel : IMapFrom<ClassFormModel>
+    public class DeleteClassViewModel : IMapFrom<ClassFormModel>
     {
         public string Id { get; set; }
 
