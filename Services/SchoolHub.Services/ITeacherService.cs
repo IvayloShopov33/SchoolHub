@@ -17,6 +17,8 @@
 
         Task<string> GetSchoolIdByTeacherId(string teacherId);
 
+        Task<int> GetSubjectIdByTeacherId(string teacherId);
+
         Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId);
 
         Task<string> AddTeacherAsync(TeacherFormModel formModel);
@@ -28,5 +30,7 @@
         Task<TeacherFormModel> GetTeacherByIdAsync(string id);
 
         Task<TeacherFormModel> GetTeacherByUserIdAsync(string userId);
+
+        Task<string> GetTeacherIdByUserIdAsync(string userId);
     }
 }

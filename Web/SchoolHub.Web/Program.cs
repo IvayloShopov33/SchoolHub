@@ -78,6 +78,8 @@ namespace SchoolHub.Web
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IClassService, ClassService>();
             services.AddTransient<ISubjectService, SubjectService>();
+            services.AddTransient<IGradeService, GradeService>();
+            services.AddTransient<ICategoryService, CategoryService>();
         }
 
         private static void Configure(WebApplication app)

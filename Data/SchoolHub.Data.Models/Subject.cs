@@ -22,8 +22,6 @@
 
         public virtual ICollection<Teacher> Teachers { get; set; } = new HashSet<Teacher>();
 
-        public virtual ICollection<Topic> Topics { get; set; } = new HashSet<Topic>();
-
         public virtual ICollection<Grade> Grades { get; set; } = new HashSet<Grade>();
 
         public virtual ICollection<Absence> Absences { get; set; } = new HashSet<Absence>();

@@ -77,6 +77,15 @@
             return teacher.SchoolId;
         }
 
+        public async Task<int> GetSubjectIdByTeacherId(string teacherId)
+        {
+            var teacher = await this.teacherRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
+
+            return teacher.SubjectId;
+        }
+
         public async Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId)
             => await this.teacherRepository
                 .All()
@@ -133,5 +142,14 @@
                 .Where(x => x.UserId == userId && !x.IsDeleted)
                 .To<TeacherFormModel>()
                 .FirstOrDefaultAsync();
+
+        public async Task<string> GetTeacherIdByUserIdAsync(string userId)
+        {
+            var teacher = await this.teacherRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.UserId == userId && !x.IsDeleted);
+
+            return teacher.Id;
+        }
     }
 }

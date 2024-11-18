@@ -25,9 +25,6 @@
                     case '&':
                         builder.Append("and");
                         break;
-                    case '"':
-                        builder.Append("&quot;");
-                        break;
                     case '\'':
                         builder.Append("&#39;");
                         break;

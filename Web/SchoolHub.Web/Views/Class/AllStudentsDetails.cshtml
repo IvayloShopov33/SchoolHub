@@ -39,8 +39,13 @@
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.BirthDate)</td>
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.Username)</td>
                                     <td class="text-center">
+                                        @if (this.User.IsTeacher())
+                                        {
+                                            <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
+                                        }
                                         @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
                                         {
+                                            <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
                                             <a asp-controller="Student" asp-action="Edit" asp-route-id="@student.Id" class="btn btn-outline-warning btn-sm">Edit</a>
                                         }
                                         @if (this.User.IsAdmin())

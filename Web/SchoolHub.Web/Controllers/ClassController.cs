@@ -10,6 +10,7 @@
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
+    using SchoolHub.Web.Infrastructure;
     using SchoolHub.Web.ViewModels.Class;
 
     [Authorize]
@@ -24,9 +25,13 @@
             this.teacherService = teacherService;
         }
 
-        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Index(string schoolId, int page = 1, string searchTerm = "")
         {
+            if (!this.User.IsAdmin() && !await this.teacherService.IsTeacherAsync(this.User.GetId()))
+            {
+                return this.Unauthorized();
+            }
+
             const int PageSize = 3;
             var allClasses = await this.classService.GetAllClassesBySchoolIdAsync(schoolId)
                 .To<IndexClassViewModel>()

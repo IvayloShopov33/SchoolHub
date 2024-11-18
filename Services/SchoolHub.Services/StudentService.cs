@@ -1,15 +1,22 @@
 ﻿namespace SchoolHub.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+
     using SchoolHub.Common;
     using SchoolHub.Data.Common.Repositories;
     using SchoolHub.Data.Models;
     using SchoolHub.Services.Mapping;
+    using SchoolHub.Web.ViewModels.Grade;
     using SchoolHub.Web.ViewModels.Student;
+    using SchoolHub.Web.ViewModels.Subject;
+
+    using static SchoolHub.Data.Common.ModelsValidationConstraints;
 
     public class StudentService : IStudentService
     {
@@ -38,6 +45,34 @@
                 .Where(x => x.UserId == userId && !x.IsDeleted)
                 .To<StudentFormModel>()
                 .FirstOrDefaultAsync();
+
+        public async Task<Student> GetStudentDetailsByIdAsync(string id)
+            => await this.studentRepository
+                .All()
+                .Include(s => s.Grades)
+                    .ThenInclude(g => g.Subject)
+                .Include(s => s.Grades)
+                    .ThenInclude(g => g.Category)
+                .Include(s => s.Grades)
+                    .ThenInclude(g => g.Teacher)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        public List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student)
+            => student.Grades
+                .GroupBy(g => g.Subject.Name)
+                    .Select(g => new SubjectGradesViewModel
+                    {
+                        SubjectName = g.Key,
+                        Grades = g.Select(grade => new DetailsGradeViewModel
+                        {
+                            Score = grade.Score,
+                            Date = grade.Date.ToString(DateTimeFormat),
+                            Category = grade.Category.Name,
+                            Teacher = grade.Teacher.FullName,
+                        })
+                        .ToList(),
+                    })
+                .ToList();
 
         public async Task<string> SetStudentUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate)
         {

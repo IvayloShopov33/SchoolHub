@@ -24,13 +24,13 @@
         public const byte SubjectDescriptionMinLength = 15;
         public const int SubjectDescriptionMaxLength = 625;
 
-        // Topic
-        public const byte TopicNameMinLength = 7;
-        public const byte TopicNameMaxLength = 60;
-
         // Category
         public const byte CategoryNameMinLength = 4;
         public const byte CategoryNameMaxLength = 50;
+
+        // Grade
+        public const byte GradeScoreMinValue = 2;
+        public const byte GradeScoreMaxValue = 6;
 
         // Remark
         public const byte RemarkDescriptionMinLength = 15;

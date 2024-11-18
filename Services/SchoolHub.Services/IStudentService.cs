@@ -1,9 +1,12 @@
 ﻿namespace SchoolHub.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using SchoolHub.Data.Models;
     using SchoolHub.Web.ViewModels.Student;
+    using SchoolHub.Web.ViewModels.Subject;
 
     public interface IStudentService
     {
@@ -12,6 +15,10 @@
         Task<StudentFormModel> GetStudentByIdAsync(string id);
 
         Task<StudentFormModel> GetStudentByUserIdAsync(string userId);
+
+        Task<Student> GetStudentDetailsByIdAsync(string id);
+
+        List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student);
 
         Task<string> SetStudentUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate);
 

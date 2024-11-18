@@ -1,0 +1,56 @@
+﻿@model StudentGradesViewModel
+
+@using SchoolHub.Services
+@inject ITeacherService teacherService
+
+@{
+    ViewData["Title"] = "Grades";
+}
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">@Model.StudentName's Grades</h2>
+
+    @if (this.User.IsTeacher())
+    {
+        <a asp-controller="Grade" asp-action="Add" asp-route-studentId="@Model.StudentId" asp-route-teacherId="@await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId())" class="btn btn-primary btn-sm">Add a Grade</a>
+    }
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Subject</th>
+                <th>Grades</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subjectGrades in Model.SubjectGrades)
+            {
+                <tr>
+                    <td>@subjectGrades.SubjectName</td>
+                    <td>
+                        @foreach (var grade in subjectGrades.Grades)
+                        {
+                            <span style="font-size: 1.06rem;" class="badge badge-success"
+                                  data-toggle="tooltip"
+                                  data-placement="top"
+                                  title="Category: @grade.Category, Date: @grade.Date, Teacher: @grade.Teacher">
+                                @grade.Score
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

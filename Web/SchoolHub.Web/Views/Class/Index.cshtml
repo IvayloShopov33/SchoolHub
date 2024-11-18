@@ -31,8 +31,11 @@
                     </div>
                     <div class="card-footer text-center">
                         <a asp-action="AllStudentsDetails" asp-route-id="@classModel.Id" class="btn btn-outline-primary btn-sm">View Students</a>
-                        <a asp-action="Edit" asp-route-classId="@classModel.Id" asp-route-teacherId="@classModel.HomeroomTeacherId" class="btn btn-outline-secondary btn-sm mx-2">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@classModel.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                        @if (this.User.IsAdmin())
+                        {
+                            <a asp-action="Edit" asp-route-classId="@classModel.Id" asp-route-teacherId="@classModel.HomeroomTeacherId" class="btn btn-outline-secondary btn-sm mx-2">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@classModel.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                        }
                     </div>
                 </div>
             </div>
