@@ -63,8 +63,11 @@
                     .Select(g => new SubjectGradesViewModel
                     {
                         SubjectName = g.Key,
-                        Grades = g.Select(grade => new DetailsGradeViewModel
+                        Grades = g
+                        .OrderBy(grade => grade.Date)
+                        .Select(grade => new DetailsGradeViewModel
                         {
+                            Id = grade.Id,
                             Score = grade.Score,
                             Date = grade.Date.ToString(DateTimeFormat),
                             Category = grade.Category.Name,
@@ -72,6 +75,7 @@
                         })
                         .ToList(),
                     })
+                .OrderBy(x => x.SubjectName)
                 .ToList();
 
         public async Task<string> SetStudentUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate)

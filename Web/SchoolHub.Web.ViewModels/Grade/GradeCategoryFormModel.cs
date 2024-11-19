@@ -8,7 +8,7 @@
 
     public class GradeCategoryFormModel : IMapFrom<SchoolHub.Data.Models.Category>
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(CategoryNameMaxLength, MinimumLength = CategoryNameMinLength)]

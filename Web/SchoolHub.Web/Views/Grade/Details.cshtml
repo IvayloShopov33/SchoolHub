@@ -1,0 +1,43 @@
+﻿@model DetailsGradeViewModel
+
+@{
+    ViewData["Title"] = "Grade Details";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h4>Grade Details</h4>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold">Student:</div>
+                <div class="col-md-8">@Model.Student</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold">Score:</div>
+                <div class="col-md-8">@Model.Score</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold">Category:</div>
+                <div class="col-md-8">@Model.Category</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold">Date:</div>
+                <div class="col-md-8">@Model.Date</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4 font-weight-bold">Teacher:</div>
+                <div class="col-md-8">@Model.Teacher</div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            @if (this.User.IsAdmin() || this.User.IsTeacher())
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mx-2">Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mx-2">Delete</a>
+            }
+        </div>
+    </div>
+</div>

@@ -26,9 +26,9 @@
         public int SubjectId { get; set; }
 
         [Required]
-        public string StudentId { get; set; } = null!;
+        public string StudentId { get; set; }
 
         [Required]
-        public string TeacherId { get; set; } = null!;
+        public string TeacherId { get; set; }
     }
 }

@@ -8,7 +8,11 @@
 
     public class DetailsGradeViewModel : IMapFrom<SchoolHub.Data.Models.Grade>, IHaveCustomMappings
     {
+        public string Id { get; set; }
+
         public int Score { get; set; }
+
+        public string Student { get; set; }
 
         public string Category { get; set; }
 
@@ -20,6 +24,7 @@
         {
             configuration.CreateMap<SchoolHub.Data.Models.Grade, DetailsGradeViewModel>()
                 .ForMember(x => x.Category, mo => mo.MapFrom(y => y.Category.Name))
+                .ForMember(x => x.Student, mo => mo.MapFrom(y => y.Student.FullName))
                 .ForMember(x => x.Date, mo => mo.MapFrom(y => y.Date.ToString(DateTimeFormat)))
                 .ForMember(x => x.Teacher, mo => mo.MapFrom(y => y.Teacher.FullName));
         }

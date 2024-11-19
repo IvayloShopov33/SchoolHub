@@ -5,46 +5,95 @@
 
 @{
     ViewData["Title"] = "Grades";
+
+    string teacherId = null;
+    if (!this.User.IsAdmin() && !this.User.IsStudent())
+    {
+        teacherId = await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId());
+    }
 }
 <head>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <div class="container my-5">
-    <h2 class="text-center mb-4">@Model.StudentName's Grades</h2>
+    <h2 class="text-center mb-4">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(Model.StudentName)'s Grades</h2>
 
-    @if (this.User.IsTeacher())
+    @if (teacherId != null)
     {
-        <a asp-controller="Grade" asp-action="Add" asp-route-studentId="@Model.StudentId" asp-route-teacherId="@await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId())" class="btn btn-primary btn-sm">Add a Grade</a>
+        <a asp-controller="Grade" asp-action="Add" asp-route-studentId="@Model.StudentId" asp-route-teacherId="@teacherId" class="btn btn-primary btn-sm mb-1">Add a Grade</a>
     }
 
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Subject</th>
-                <th>Grades</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var subjectGrades in Model.SubjectGrades)
-            {
+    @if (Model.SubjectGrades.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@subjectGrades.SubjectName</td>
-                    <td>
-                        @foreach (var grade in subjectGrades.Grades)
-                        {
-                            <span style="font-size: 1.06rem;" class="badge badge-success"
-                                  data-toggle="tooltip"
-                                  data-placement="top"
-                                  title="Category: @grade.Category, Date: @grade.Date, Teacher: @grade.Teacher">
-                                @grade.Score
-                            </span>
-                        }
-                    </td>
+                    <th>Subject</th>
+                    <th>Grades</th>
+                    <th>Final Grade</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var subjectGrades in Model.SubjectGrades)
+                {
+                    var averageGrade = subjectGrades.Grades.Any() ? Math.Round(subjectGrades.Grades.Average(g => g.Score), 2) : 0;
+
+                    <tr>
+                        <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(subjectGrades.SubjectName)</td>
+                        <td>
+                            @foreach (var grade in subjectGrades.Grades)
+                            {
+                                string badgeClass;
+                                switch (grade.Score)
+                                {
+                                    case 6:
+                                        badgeClass = "badge-success";
+                                        break;
+                                    case 5:
+                                        badgeClass = "badge-info";
+                                        break;
+                                    case 4:
+                                        badgeClass = "badge-warning";
+                                        break;
+                                    case 3:
+                                        badgeClass = "badge-secondary";
+                                        break;
+                                    default:
+                                        badgeClass = "badge-danger";
+                                        break;
+                                }
+
+                                if (teacherId != null || this.User.IsAdmin())
+                                {
+                                    <a asp-controller="Grade" asp-action="Details" asp-route-id="@grade.Id" class="badge @badgeClass" style="font-size: 1.06rem;"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="Category: @grade.Category, Date: @grade.Date, Teacher: @grade.Teacher">
+                                        @grade.Score
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span style="font-size: 1.06rem;" class="badge @badgeClass"
+                                          data-toggle="tooltip"
+                                          data-placement="top"
+                                          title="Category: @grade.Category, Date: @grade.Date, Teacher: @grade.Teacher">
+                                        @grade.Score
+                                    </span>
+                                }
+                            }
+                        </td>
+                        <td>@($"{averageGrade:f2}")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h3 class="text-center mb-4">There are no currently any grades.</h3>
+    }
 </div>
 
 @section Scripts {
