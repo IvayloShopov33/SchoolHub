@@ -1,6 +1,7 @@
 namespace SchoolHub.Web
 {
     using System;
+    using System.Net;
     using System.Reflection;
 
     using Microsoft.AspNetCore.Builder;
@@ -94,6 +95,7 @@ namespace SchoolHub.Web
 
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
 
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -102,11 +104,12 @@ namespace SchoolHub.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePages();
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseCookiePolicy();
 
             app.UseRouting();
