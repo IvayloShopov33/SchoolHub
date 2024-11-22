@@ -7,6 +7,6 @@
 
     public interface ISubjectService
     {
-        Task<List<TeacherSubjectFormModel>> GetAllSubjects();
+        Task<List<TeacherSubjectFormModel>> GetAllSubjectsAsync();
     }
 }

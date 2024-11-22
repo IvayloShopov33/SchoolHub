@@ -1,9 +1,18 @@
 ﻿@model ClassWithStudentsViewModel
 
+@using SchoolHub.Services
+@inject ITeacherService teacherService
+
 @{
     ViewData["Title"] = "All Students";
 
     var number = 1;
+
+    string teacherId = null;
+    if (!this.User.IsAdmin() && !this.User.IsStudent())
+    {
+        teacherId = await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId());
+    }
 }
 
 <div class="container my-5">
@@ -39,8 +48,9 @@
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.BirthDate)</td>
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.Username)</td>
                                     <td class="text-center">
-                                        @if (this.User.IsTeacher())
+                                        @if (teacherId != null)
                                         {
+                                            <a asp-controller="Absence" asp-action="Add" asp-route-studentId="@student.Id" asp-route-teacherId="@teacherId" class="btn btn-outline-info btn-sm">Add an Absence</a>
                                             <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
                                         }
                                         @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))

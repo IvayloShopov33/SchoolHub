@@ -58,7 +58,7 @@
         [Authorize(Roles = GlobalConstants.TeacherRoleName)]
         public async Task<IActionResult> Add(string studentId, string teacherId)
         {
-            var subjectId = await this.teacherService.GetSubjectIdByTeacherId(teacherId);
+            var subjectId = await this.teacherService.GetSubjectIdByTeacherIdAsync(teacherId);
 
             return this.View(new GradeFormModel
             {
@@ -73,7 +73,7 @@
         [HttpPost]
         public async Task<IActionResult> Add(string studentId, string teacherId, GradeFormModel formModel)
         {
-            var subjectId = await this.teacherService.GetSubjectIdByTeacherId(teacherId);
+            var subjectId = await this.teacherService.GetSubjectIdByTeacherIdAsync(teacherId);
 
             if (!this.ModelState.IsValid)
             {

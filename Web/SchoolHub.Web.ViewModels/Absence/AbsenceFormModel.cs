@@ -1,4 +1,4 @@
-﻿namespace SchoolHub.Web.ViewModels.Grade
+﻿namespace SchoolHub.Web.ViewModels.Absence
 {
     using System;
     using System.Collections.Generic;
@@ -7,14 +7,8 @@
     using SchoolHub.Services.Mapping;
     using SchoolHub.Web.ViewModels.Category;
 
-    using static SchoolHub.Data.Common.ModelsValidationConstraints;
-
-    public class GradeFormModel : IMapTo<SchoolHub.Data.Models.Grade>
+    public class AbsenceFormModel : IMapTo<SchoolHub.Data.Models.Absence>
     {
-        [Required]
-        [Range(GradeScoreMinValue, GradeScoreMaxValue)]
-        public int Score { get; set; }
-
         [Required]
         public int CategoryId { get; set; }
 

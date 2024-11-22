@@ -28,7 +28,7 @@
         public async Task<bool> IsTeacherAsync(string userId)
             => await this.teacherRepository.AllAsNoTracking().AnyAsync(x => x.UserId == userId && !x.IsDeleted);
 
-        public async Task SetClassIdByHomeroomTeacherId(string homeroomTeacherId, string classId)
+        public async Task SetClassIdByHomeroomTeacherIdAsync(string homeroomTeacherId, string classId)
         {
             var teacher = await this.teacherRepository
                 .All()
@@ -68,7 +68,7 @@
             return teacher.UserId;
         }
 
-        public async Task<string> GetSchoolIdByTeacherId(string teacherId)
+        public async Task<string> GetSchoolIdByTeacherIdAsync(string teacherId)
         {
             var teacher = await this.teacherRepository
                 .AllAsNoTracking()
@@ -77,11 +77,11 @@
             return teacher.SchoolId;
         }
 
-        public async Task<int> GetSubjectIdByTeacherId(string teacherId)
+        public async Task<int> GetSubjectIdByTeacherIdAsync(string teacherId)
         {
             var teacher = await this.teacherRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
+                .FirstOrDefaultAsync(x => (x.Id == teacherId || x.UserId == teacherId) && !x.IsDeleted);
 
             return teacher.SubjectId;
         }

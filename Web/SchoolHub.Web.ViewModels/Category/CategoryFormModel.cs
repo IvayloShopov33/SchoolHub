@@ -1,4 +1,4 @@
-﻿namespace SchoolHub.Web.ViewModels.Grade
+﻿namespace SchoolHub.Web.ViewModels.Category
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -6,7 +6,7 @@
 
     using static SchoolHub.Data.Common.ModelsValidationConstraints;
 
-    public class GradeCategoryFormModel : IMapFrom<SchoolHub.Data.Models.Category>
+    public class CategoryFormModel : IMapFrom<Data.Models.Category>
     {
         public int Id { get; set; }
 

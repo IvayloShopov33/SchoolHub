@@ -85,7 +85,7 @@
                 return this.BadRequest();
             }
 
-            var schoolId = await this.teacherService.GetSchoolIdByTeacherId(teacherId);
+            var schoolId = await this.teacherService.GetSchoolIdByTeacherIdAsync(teacherId);
 
             formModel.HomeroomTeacherId = teacherId;
             formModel.SchoolId = schoolId;
@@ -104,7 +104,7 @@
             }
 
             var classId = await this.classService.AddClassAsync(formModel);
-            await this.teacherService.SetClassIdByHomeroomTeacherId(teacherId, classId);
+            await this.teacherService.SetClassIdByHomeroomTeacherIdAsync(teacherId, classId);
 
             return this.RedirectToAction("Index", new { schoolId = schoolId });
         }
@@ -144,7 +144,7 @@
             var classById = await this.classService.GetClassByIdAsync(classId);
 
             classById.HomeroomTeacherId = teacherId;
-            classById.SchoolId = await this.classService.GetSchoolIdByClassId(classId);
+            classById.SchoolId = await this.classService.GetSchoolIdByClassIdAsync(classId);
 
             return this.View(classById);
         }
@@ -158,7 +158,7 @@
                 return this.BadRequest();
             }
 
-            var schoolId = await this.classService.GetSchoolIdByClassId(classId);
+            var schoolId = await this.classService.GetSchoolIdByClassIdAsync(classId);
 
             formModel.HomeroomTeacherId = teacherId;
             formModel.SchoolId = schoolId;

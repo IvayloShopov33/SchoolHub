@@ -4,20 +4,19 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using SchoolHub.Data.Models;
     using SchoolHub.Web.ViewModels.Teacher;
 
     public interface ITeacherService
     {
         Task<bool> IsTeacherAsync(string userId);
 
-        Task SetClassIdByHomeroomTeacherId(string homeroomTeacherId, string classId);
+        Task SetClassIdByHomeroomTeacherIdAsync(string homeroomTeacherId, string classId);
 
         Task<string> SetTeacherUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate);
 
-        Task<string> GetSchoolIdByTeacherId(string teacherId);
+        Task<string> GetSchoolIdByTeacherIdAsync(string teacherId);
 
-        Task<int> GetSubjectIdByTeacherId(string teacherId);
+        Task<int> GetSubjectIdByTeacherIdAsync(string teacherId);
 
         Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId);
 

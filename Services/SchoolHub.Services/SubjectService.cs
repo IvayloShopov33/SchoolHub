@@ -20,7 +20,7 @@
             this.subjectRepository = subjectRepository;
         }
 
-        public async Task<List<TeacherSubjectFormModel>> GetAllSubjects()
+        public async Task<List<TeacherSubjectFormModel>> GetAllSubjectsAsync()
             => await this.subjectRepository
                 .All()
                 .Where(x => !x.IsDeleted)

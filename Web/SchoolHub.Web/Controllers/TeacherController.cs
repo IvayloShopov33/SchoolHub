@@ -77,7 +77,7 @@
             {
                 SchoolId = schoolId,
                 Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(schoolId),
-                Subjects = await this.subjectService.GetAllSubjects(),
+                Subjects = await this.subjectService.GetAllSubjectsAsync(),
             });
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
@@ -88,7 +88,7 @@
             {
                 formModel.SchoolId = schoolId;
                 formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(schoolId);
-                formModel.Subjects = await this.subjectService.GetAllSubjects();
+                formModel.Subjects = await this.subjectService.GetAllSubjectsAsync();
 
                 return this.View(formModel);
             }
@@ -96,7 +96,7 @@
             var teacherId = await this.teacherService.AddTeacherAsync(formModel);
             if (formModel.ClassId != null)
             {
-                await this.classService.SetHomeroomTeacherIdByClassId(formModel.ClassId, teacherId);
+                await this.classService.SetHomeroomTeacherIdByClassIdAsync(formModel.ClassId, teacherId);
             }
 
             return this.RedirectToAction("Details", "School", new { id = schoolId });
@@ -131,7 +131,7 @@
             var teacher = await this.teacherService.GetTeacherByIdAsync(id);
 
             teacher.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(teacher.SchoolId, teacher.Id);
-            teacher.Subjects = await this.subjectService.GetAllSubjects();
+            teacher.Subjects = await this.subjectService.GetAllSubjectsAsync();
 
             return this.View(teacher);
         }
@@ -143,7 +143,7 @@
             if (!this.ModelState.IsValid)
             {
                 formModel.Classes = await this.classService.GetAllTeacherClassesBySchoolIdAsync(formModel.SchoolId, formModel.Id);
-                formModel.Subjects = await this.subjectService.GetAllSubjects();
+                formModel.Subjects = await this.subjectService.GetAllSubjectsAsync();
 
                 return this.View(formModel);
             }

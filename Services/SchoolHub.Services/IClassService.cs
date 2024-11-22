@@ -23,9 +23,9 @@
 
         Task<MyClassViewModel> GetTeacherClassByIdAsync(string id);
 
-        Task<string> GetSchoolIdByClassId(string classId);
+        Task<string> GetSchoolIdByClassIdAsync(string classId);
 
-        Task SetHomeroomTeacherIdByClassId(string classId, string homeroomTeacherId);
+        Task SetHomeroomTeacherIdByClassIdAsync(string classId, string homeroomTeacherId);
 
         Task<string> AddClassAsync(ClassFormModel formModel);
 

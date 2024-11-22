@@ -3,10 +3,12 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using SchoolHub.Web.ViewModels.Grade;
+    using SchoolHub.Web.ViewModels.Category;
 
     public interface ICategoryService
     {
-        Task<List<GradeCategoryFormModel>> GetGradeCategoriesAsync();
+        Task<List<CategoryFormModel>> GetGradeCategoriesAsync();
+
+        Task<List<CategoryFormModel>> GetAbsenceCategoriesAsync();
     }
 }

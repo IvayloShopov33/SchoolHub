@@ -64,7 +64,7 @@
                 .To<MyClassViewModel>()
                 .FirstOrDefaultAsync();
 
-        public async Task<string> GetSchoolIdByClassId(string classId)
+        public async Task<string> GetSchoolIdByClassIdAsync(string classId)
         {
             var @class = await this.classRepository
                 .AllAsNoTracking()
@@ -73,7 +73,7 @@
             return @class.SchoolId;
         }
 
-        public async Task SetHomeroomTeacherIdByClassId(string classId, string homeroomTeacherId)
+        public async Task SetHomeroomTeacherIdByClassIdAsync(string classId, string homeroomTeacherId)
         {
             var @class = await this.classRepository
                 .All()
