@@ -37,5 +37,33 @@
             return this.View(
                 new ErrorViewModel { RequestId = requestId });
         }
+
+        public IActionResult Status(int? code)
+        {
+            if (!code.HasValue)
+            {
+                this.logger.LogWarning("No status code provided.");
+
+                return this.RedirectToAction("Index");
+            }
+
+            var statusCode = code.Value;
+
+            this.logger.LogError($"Error with status code {statusCode} occurred.");
+
+            switch (statusCode)
+            {
+                case 400:
+                    return this.View("BadRequest");
+                case 401:
+                    return this.View("Unauthorized");
+                case 404:
+                    return this.View("NotFound");
+                case 500:
+                    return this.View("ServerError");
+                default:
+                    return this.View("Error");
+            }
+        }
     }
 }

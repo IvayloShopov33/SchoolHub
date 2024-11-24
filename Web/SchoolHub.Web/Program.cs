@@ -105,13 +105,14 @@ namespace SchoolHub.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseStatusCodePages();
                 app.UseHsts();
             }
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
+
+            app.UseStatusCodePagesWithRedirects("/Home/Status?code={0}");
 
             app.UseRouting();
 

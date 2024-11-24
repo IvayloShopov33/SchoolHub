@@ -39,6 +39,7 @@
             {
                 StudentId = studentId,
                 StudentName = student.FullName,
+                ClassId = student.ClassId,
                 SubjectGrades = this.studentService.GetStudentGradesGroupBySubjectAsync(student),
             });
         }
@@ -137,9 +138,13 @@
             return this.RedirectToAction("Index", new { studentId = gradeDetails.StudentId });
         }
 
-        [Authorize(Roles = GlobalConstants.TeacherRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!this.User.IsAdmin() && !await this.teacherService.IsTeacherAsync(this.User.GetId()))
+            {
+                return this.Unauthorized();
+            }
+
             var gradeDetails = await this.gradeService.GetGradeFurtherDetailsByIdAsync(id);
 
             await this.gradeService.DeleteGradeAsync(id);

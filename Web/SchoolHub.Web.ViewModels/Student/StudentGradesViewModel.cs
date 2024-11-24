@@ -10,6 +10,8 @@
 
         public string StudentName { get; set; }
 
+        public string ClassId { get; set; }
+
         public List<SubjectGradesViewModel> SubjectGrades { get; set; } = new List<SubjectGradesViewModel>();
     }
 }

@@ -2,6 +2,7 @@
 
 @using SchoolHub.Services
 @inject ITeacherService teacherService
+@inject IGradeService gradeService
 
 @{
     ViewData["Title"] = "Grades";
@@ -21,7 +22,7 @@
 
     @if (teacherId != null)
     {
-        <a asp-controller="Grade" asp-action="Add" asp-route-studentId="@Model.StudentId" asp-route-teacherId="@teacherId" class="btn btn-primary btn-sm mb-1">Add a Grade</a>
+        <a asp-controller="Grade" asp-action="Add" asp-route-studentId="@Model.StudentId" asp-route-teacherId="@teacherId" class="btn btn-outline-info btn-sm mb-1">Add a Grade</a>
     }
 
     @if (Model.SubjectGrades.Any())
@@ -64,7 +65,7 @@
                                         break;
                                 }
 
-                                if (teacherId != null || this.User.IsAdmin())
+                                if (await this.gradeService.IsGradeAppliedByTeacherAsync(teacherId, grade.Id) || this.User.IsAdmin())
                                 {
                                     <a asp-controller="Grade" asp-action="Details" asp-route-id="@grade.Id" class="badge @badgeClass" style="font-size: 1.06rem;"
                                        data-toggle="tooltip"
@@ -94,6 +95,10 @@
     {
         <h3 class="text-center mb-4">There are no currently any grades.</h3>
     }
+
+    <div class="text-center">
+        <a asp-controller="Class" asp-action="AllStudentsDetails" asp-route-id="@Model.ClassId" class="btn btn-primary">Back to All Students</a>
+    </div>
 </div>
 
 @section Scripts {

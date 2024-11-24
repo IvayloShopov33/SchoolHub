@@ -18,6 +18,9 @@
             this.gradeRepository = gradeRepository;
         }
 
+        public async Task<bool> IsGradeAppliedByTeacherAsync(string teacherId, string gradeId)
+            => await this.gradeRepository.AllAsNoTracking().AnyAsync(x => x.TeacherId == teacherId && x.Id == gradeId && !x.IsDeleted);
+
         public async Task<DetailsGradeViewModel> GetGradeDetailsByIdAsync(string id)
             => await this.gradeRepository
                 .AllAsNoTracking()

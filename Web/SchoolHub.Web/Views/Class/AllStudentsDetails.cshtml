@@ -48,16 +48,17 @@
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.BirthDate)</td>
                                     <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(student.Username)</td>
                                     <td class="text-center">
-                                        @if (teacherId != null)
+                                        @if (teacherId != null || this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
                                         {
-                                            <a asp-controller="Absence" asp-action="Add" asp-route-studentId="@student.Id" asp-route-teacherId="@teacherId" class="btn btn-outline-info btn-sm">Add an Absence</a>
+                                            <a asp-controller="Absence" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-info btn-sm">View Absences</a>
                                             <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
                                         }
+
                                         @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
-                                        {
-                                            <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
+                                        {                                    
                                             <a asp-controller="Student" asp-action="Edit" asp-route-id="@student.Id" class="btn btn-outline-warning btn-sm">Edit</a>
                                         }
+                                        
                                         @if (this.User.IsAdmin())
                                         {
                                             <a asp-controller="Student" asp-action="Delete" asp-route-id="@student.Id" class="btn btn-outline-danger btn-sm">Delete</a>

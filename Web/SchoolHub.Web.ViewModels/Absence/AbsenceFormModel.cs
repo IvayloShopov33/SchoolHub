@@ -7,7 +7,7 @@
     using SchoolHub.Services.Mapping;
     using SchoolHub.Web.ViewModels.Category;
 
-    public class AbsenceFormModel : IMapTo<SchoolHub.Data.Models.Absence>
+    public class AbsenceFormModel : IMapTo<SchoolHub.Data.Models.Absence>, IMapFrom<SchoolHub.Data.Models.Absence>
     {
         [Required]
         public int CategoryId { get; set; }
