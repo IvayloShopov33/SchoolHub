@@ -16,9 +16,13 @@
 
         Task<StudentFormModel> GetStudentByUserIdAsync(string userId);
 
+        Task<string> GetStudentIdByUserIdAsync(string userId);
+
         Task<Student> GetStudentDetailsByIdAsync(string id);
 
         List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student);
+
+        Task<StudentStatisticsViewModel> GetStudentStatisticsAsync(string studentId);
 
         Task<string> SetStudentUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate);
 

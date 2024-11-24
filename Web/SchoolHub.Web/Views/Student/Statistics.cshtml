@@ -1,0 +1,54 @@
+﻿@model StudentStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Student Statistics";
+
+    string gradeInWords = Model.AverageGPA switch
+    {
+        <= 2.99 => "Poor",
+        <= 3.49 => "Satisfactory",
+        <= 4.49 => "Good",
+        <= 5.49 => "Very Good",
+        <= 6.00 => "Excellent",
+        _ => "Poor"
+    };
+
+    string style = Model.AverageGPA switch
+    {
+        <= 2.99 => "text-danger fw-bold",
+        <= 3.49 => "text-warning fw-bold",
+        <= 4.49 => "text-info fw-bold",
+        <= 5.49 => "text-primary fw-bold",
+        <= 6.00 => "text-success fw-bold",
+        _ => "text-danger fw-bold"
+    };
+}
+
+<div class="container py-4">
+    <h2 class="text-center">Statistics for @Model.StudentName</h2>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="bg-light">Average GPA</th>
+                        <td class="@style">@gradeInWords (@Model.AverageGPA.ToString("F2"))</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Total Absences</th>
+                        <td class="text-danger fw-bold">@Model.TotalAbsences</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Praising Remarks</th>
+                        <td class="text-success fw-bold">@Model.PraisingRemarksCount</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Negative Remarks</th>
+                        <td class="text-danger fw-bold">@Model.NegativeRemarksCount</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

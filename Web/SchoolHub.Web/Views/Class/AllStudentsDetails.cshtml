@@ -50,8 +50,10 @@
                                     <td class="text-center">
                                         @if (teacherId != null || this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
                                         {
+                                            <a asp-controller="Student" asp-action="Statistics" asp-route-studentId="@student.Id" class="btn btn-outline-success btn-sm">View Statistics</a>
                                             <a asp-controller="Absence" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-info btn-sm">View Absences</a>
                                             <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
+                                            <a asp-controller="Remark" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-secondary btn-sm">View Remarks</a>
                                         }
 
                                         @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))

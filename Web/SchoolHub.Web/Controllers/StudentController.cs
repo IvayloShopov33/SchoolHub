@@ -36,6 +36,18 @@
             return this.RedirectToAction("AllStudentsDetails", "Class", new { id = student.ClassId });
         }
 
+        public async Task<IActionResult> Statistics(string studentId)
+        {
+            if (!this.User.IsAdmin() && !this.User.IsTeacher() && !this.User.IsStudent())
+            {
+                return this.Unauthorized();
+            }
+
+            var statistics = await this.studentService.GetStudentStatisticsAsync(studentId);
+
+            return this.View(statistics);
+        }
+
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Add(string schoolId)
             => this.View(new StudentFormModel

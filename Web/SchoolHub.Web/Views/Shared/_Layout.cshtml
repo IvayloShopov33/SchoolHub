@@ -1,4 +1,26 @@
 ﻿@using SchoolHub.Common
+@using SchoolHub.Services
+@inject ITeacherService teacherService
+@inject IStudentService studentService
+
+@{
+    string studentId = null;
+    string teacherId = null;
+
+    if (this.User.Identity.IsAuthenticated)
+    {
+        if (this.User.IsStudent())
+        {
+            studentId = await this.studentService.GetStudentIdByUserIdAsync(this.User.GetId());
+        }
+
+        if (this.User.IsTeacher())
+        {
+            teacherId = await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId());
+        }
+    }
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +50,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="School" asp-action="Index">All Schools</a>
                         </li>
+                        @if (this.User.Identity.IsAuthenticated && studentId != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Grade" asp-action="Index" asp-route-studentId="@studentId">My Grades</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Absence" asp-action="Index" asp-route-studentId="@studentId">My Absences</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Remark" asp-action="Index" asp-route-studentId="@studentId">My Remarks</a>
+                            </li>
+                        }
+
                         @if (this.User.IsAdmin())
                         {
                             <li class="nav-item">

@@ -1,25 +1,38 @@
 ﻿namespace SchoolHub.Web.Controllers
 {
     using System.Diagnostics;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
+    using SchoolHub.Services;
     using SchoolHub.Web.Infrastructure;
     using SchoolHub.Web.ViewModels;
 
     public class HomeController : Controller
     {
         private readonly ILogger logger;
+        private readonly IStudentService studentService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IStudentService studentService)
         {
             this.logger = logger;
+            this.studentService = studentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (this.User.GetId() != null)
+            var userId = this.User.GetId();
+
+            if (this.User.IsStudent())
+            {
+                var studentId = await this.studentService.GetStudentIdByUserIdAsync(userId);
+
+                return this.RedirectToAction("Statistics", "Student", new { studentId = studentId });
+            }
+
+            if (userId != null)
             {
                 return this.RedirectToAction("Index", "School");
             }

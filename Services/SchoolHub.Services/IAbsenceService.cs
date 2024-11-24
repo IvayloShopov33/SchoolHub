@@ -12,6 +12,8 @@
 
         Task<List<StudentAbsenceViewModel>> GetAbsencesByStudentIdAsync(string studentId);
 
+        Task<IEnumerable<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId);
+
         Task AddAbsenceAsync(AbsenceFormModel formModel);
 
         Task EditAbsenceAsync(string id, AbsenceFormModel formModel);

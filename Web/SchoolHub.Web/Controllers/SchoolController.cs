@@ -1,5 +1,6 @@
 ﻿namespace SchoolHub.Web.Controllers
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -20,11 +21,31 @@
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchQuery, int page = 1, int pageSize = 10)
         {
-            var schools = await this.schoolService.AllAsync();
+            var schools = string.IsNullOrWhiteSpace(searchQuery)
+                ? await this.schoolService.AllAsync()
+                : await this.schoolService.SearchAsync(searchQuery);
 
-            return this.View(schools);
+            var paginatedSchools = schools
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+            return this.View(new PaginatedIndexSchoolViewModel
+            {
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = schools.Count(),
+                SearchQuery = searchQuery,
+                Schools = paginatedSchools.Select(s => new IndexSchoolViewModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    WebsiteUrl = s.WebsiteUrl,
+                    TeachersCount = s.TeachersCount,
+                }).ToList(),
+            });
         }
 
         [AllowAnonymous]

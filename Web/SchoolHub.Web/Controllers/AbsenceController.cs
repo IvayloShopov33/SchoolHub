@@ -29,6 +29,11 @@
 
         public async Task<IActionResult> Index(string studentId)
         {
+            if (!this.User.IsAdmin() && !this.User.IsTeacher() && !this.User.IsStudent())
+            {
+                return this.Unauthorized();
+            }
+
             var student = await this.studentService.GetStudentByIdAsync(studentId);
             var absences = await this.absenceService.GetAbsencesByStudentIdAsync(studentId);
 
@@ -39,6 +44,18 @@
                 ClassId = student.ClassId,
                 Absences = absences,
             });
+        }
+
+        public async Task<IActionResult> GroupedAbsences(string studentId)
+        {
+            if (!this.User.IsAdmin() && !this.User.IsTeacher() && !this.User.IsStudent())
+            {
+                return this.Unauthorized();
+            }
+
+            var groupedAbsences = await this.absenceService.GetGroupedAbsencesByStudentAsync(studentId);
+
+            return this.View(groupedAbsences);
         }
 
         [Authorize(Roles = GlobalConstants.TeacherRoleName)]

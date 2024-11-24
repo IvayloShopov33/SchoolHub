@@ -1,0 +1,38 @@
+﻿@model IEnumerable<GroupedAbsencesViewModel>
+
+@{
+    ViewData["Title"] = "Grouped Absences";
+}
+
+<h2>Grouped Absences</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Teacher</th>
+                <th>Total Absences</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted">No absences recorded.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(item.SubjectName)</td>
+                        <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(item.TeacherName)</td>
+                        <td>@item.TotalAbsences</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

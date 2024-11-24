@@ -24,6 +24,15 @@
             => await this.schoolRepository
                 .AllAsNoTracking()
                 .Where(x => !x.IsDeleted)
+                .OrderBy(x => x.Name)
+                .To<IndexSchoolViewModel>()
+                .ToListAsync();
+
+        public async Task<List<IndexSchoolViewModel>> SearchAsync(string searchQuery)
+            => await this.schoolRepository
+                .AllAsNoTracking()
+                .Where(s => s.Name.ToLower().Contains(searchQuery.ToLower()) || s.WebsiteUrl.ToLower().Contains(searchQuery.ToLower()))
+                .OrderBy(x => x.Name)
                 .To<IndexSchoolViewModel>()
                 .ToListAsync();
 

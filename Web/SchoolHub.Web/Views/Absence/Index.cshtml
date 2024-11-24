@@ -20,6 +20,9 @@
     {
         <a asp-controller="Absence" asp-action="Add" asp-route-studentId="@Model.Id" asp-route-teacherId="@teacherId" class="btn btn-outline-info btn-sm">Add an Absence</a>
     }
+
+    <a asp-controller="Absence" asp-action="GroupedAbsences" asp-route-studentId="@Model.Id" class="btn btn-outline-primary btn-sm">Group by Subjects</a>
+
     @if (Model.Absences.Any())
     {
         <table class="table table-bordered table-striped mt-4">
@@ -40,8 +43,8 @@
                 @foreach (var absence in Model.Absences)
                 {
                     <tr>
-                        <td>@absence.SubjectName</td>
-                        <td>@absence.TeacherName</td>
+                        <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(absence.SubjectName)</td>
+                        <td>@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(absence.TeacherName)</td>
                         <td>@absence.AbsenceType</td>
                         <td>@absence.Date</td>
                         @if (this.User.IsAdmin() ||

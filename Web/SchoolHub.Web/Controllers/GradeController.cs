@@ -29,6 +29,11 @@
 
         public async Task<IActionResult> Index(string studentId)
         {
+            if (!this.User.IsAdmin() && !this.User.IsTeacher() && !this.User.IsStudent())
+            {
+                return this.Unauthorized();
+            }
+
             var student = await this.studentService.GetStudentDetailsByIdAsync(studentId);
             if (student == null)
             {

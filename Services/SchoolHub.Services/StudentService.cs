@@ -22,11 +22,13 @@
     {
         private readonly IDeletableEntityRepository<Student> studentRepository;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public StudentService(IDeletableEntityRepository<Student> studentRepository, UserManager<ApplicationUser> userManager)
+        public StudentService(IDeletableEntityRepository<Student> studentRepository, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.studentRepository = studentRepository;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public async Task<bool> IsStudentAsync(string userId)
@@ -46,6 +48,15 @@
                 .To<StudentFormModel>()
                 .FirstOrDefaultAsync();
 
+        public async Task<string> GetStudentIdByUserIdAsync(string userId)
+        {
+            var student = await this.studentRepository
+               .All()
+               .FirstOrDefaultAsync(x => x.UserId == userId && !x.IsDeleted);
+
+            return student.Id;
+        }
+
         public async Task<Student> GetStudentDetailsByIdAsync(string id)
             => await this.studentRepository
                 .All()
@@ -55,7 +66,7 @@
                     .ThenInclude(g => g.Category)
                 .Include(s => s.Grades)
                     .ThenInclude(g => g.Teacher)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
         public List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student)
             => student.Grades
@@ -77,6 +88,30 @@
                     })
                 .OrderBy(x => x.SubjectName)
                 .ToList();
+
+        public async Task<StudentStatisticsViewModel> GetStudentStatisticsAsync(string studentId)
+        {
+            var student = await this.studentRepository
+                .All()
+                .Include(s => s.Grades)
+                .Include(s => s.Absences)
+                .Include(s => s.Remarks)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                throw new ArgumentException("Student not found.");
+            }
+
+            return new StudentStatisticsViewModel
+            {
+                StudentName = student.FullName,
+                AverageGPA = student.Grades.Any() ? student.Grades.Average(g => g.Score) : 0,
+                TotalAbsences = student.Absences.Sum(a => a.CategoryId == 1 ? 1 : 0.5),
+                PraisingRemarksCount = student.Remarks.Count(r => r.IsPraise),
+                NegativeRemarksCount = student.Remarks.Count(r => !r.IsPraise),
+            };
+        }
 
         public async Task<string> SetStudentUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate)
         {
@@ -103,6 +138,8 @@
             }
 
             await this.userManager.AddToRoleAsync(student.User, GlobalConstants.StudentRoleName);
+            await this.RefreshSignInAsync(student.User);
+
             await this.studentRepository.SaveChangesAsync();
 
             return student.UserId;
@@ -141,6 +178,12 @@
             student.IsDeleted = true;
             await this.userManager.RemoveFromRoleAsync(student.User, GlobalConstants.StudentRoleName);
             await this.studentRepository.SaveChangesAsync();
+        }
+
+        private async Task RefreshSignInAsync(ApplicationUser user)
+        {
+            await this.signInManager.SignOutAsync();
+            await this.signInManager.SignInAsync(user, isPersistent: false);
         }
     }
 }

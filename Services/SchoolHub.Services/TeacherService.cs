@@ -18,11 +18,13 @@
     {
         private readonly IDeletableEntityRepository<Teacher> teacherRepository;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public TeacherService(IDeletableEntityRepository<Teacher> teacherRepository, UserManager<ApplicationUser> userManager)
+        public TeacherService(IDeletableEntityRepository<Teacher> teacherRepository, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.teacherRepository = teacherRepository;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public async Task<bool> IsTeacherAsync(string userId)
@@ -63,6 +65,8 @@
             }
 
             await this.userManager.AddToRoleAsync(teacher.User, GlobalConstants.TeacherRoleName);
+            await this.RefreshSignInAsync(teacher.User);
+
             await this.teacherRepository.SaveChangesAsync();
 
             return teacher.UserId;
@@ -150,6 +154,12 @@
                 .FirstOrDefaultAsync(x => x.UserId == userId && !x.IsDeleted);
 
             return teacher.Id;
+        }
+
+        private async Task RefreshSignInAsync(ApplicationUser user)
+        {
+            await this.signInManager.SignOutAsync();
+            await this.signInManager.SignInAsync(user, isPersistent: false);
         }
     }
 }

@@ -36,6 +36,21 @@
                 .To<StudentAbsenceViewModel>()
                 .ToListAsync();
 
+        public async Task<IEnumerable<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId)
+            => await this.absenceRepository
+                .AllAsNoTracking()
+                .Where(a => a.StudentId == studentId)
+                .GroupBy(a => new { a.Subject.Name, TeacherName = a.Teacher.FullName })
+                .Select(g => new GroupedAbsencesViewModel
+                {
+                    SubjectName = g.Key.Name,
+                    TeacherName = g.Key.TeacherName,
+                    TotalAbsences = g.Sum(a => a.Category.Name == "Absent" ? 1 : 0.5),
+                })
+                .OrderByDescending(x => x.TotalAbsences)
+                .ThenBy(x => x.SubjectName)
+                .ToListAsync();
+
         public async Task AddAbsenceAsync(AbsenceFormModel formModel)
         {
             var absence = AutoMapperConfig.MapperInstance.Map<Absence>(formModel);

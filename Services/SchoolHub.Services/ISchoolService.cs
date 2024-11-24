@@ -9,6 +9,8 @@
     {
         Task<List<IndexSchoolViewModel>> AllAsync();
 
+        Task<List<IndexSchoolViewModel>> SearchAsync(string searchQuery);
+
         Task<DetailsSchoolViewModel> GetSchoolDetailsByIdAsync(string id);
 
         Task AddSchoolAsync(SchoolFormModel formModel);
