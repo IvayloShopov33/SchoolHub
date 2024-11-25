@@ -7,7 +7,7 @@
 
     using static SchoolHub.Data.Common.ModelsValidationConstraints;
 
-    public class RemarkFormModel : IMapTo<SchoolHub.Data.Models.Remark>
+    public class RemarkFormModel : IMapTo<SchoolHub.Data.Models.Remark>, IMapFrom<SchoolHub.Data.Models.Remark>
     {
         [Required]
         [StringLength(RemarkDescriptionMaxLength, MinimumLength = RemarkDescriptionMinLength)]

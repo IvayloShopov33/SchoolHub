@@ -11,5 +11,11 @@
         public string ClassId { get; set; }
 
         public List<StudentAbsenceViewModel> Absences { get; set; } = new List<StudentAbsenceViewModel>();
+
+        public int CurrentPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int ItemsPerPage { get; set; }
     }
 }

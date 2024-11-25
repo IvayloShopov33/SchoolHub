@@ -15,55 +15,62 @@
         </div>
     </form>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var classModel in Model.Classes)
-        {
-            <div class="col">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary font-weight-bold">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.Name)</h5>
-                        <p class="card-text">
-                            <strong>School:</strong> @classModel.School<br />
-                            <strong>Homeroom Teacher:</strong> @(string.IsNullOrEmpty(classModel.HomeroomTeacher) ? "N/A" : HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.HomeroomTeacher))<br />
-                            <strong>Start Date:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.StartedOn)<br />
-                            <strong>End Date:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.EndingOn)
-                        </p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a asp-action="AllStudentsDetails" asp-route-id="@classModel.Id" class="btn btn-outline-primary btn-sm">View Students</a>
-                        @if (this.User.IsAdmin())
-                        {
-                            <a asp-action="Edit" asp-route-classId="@classModel.Id" asp-route-teacherId="@classModel.HomeroomTeacherId" class="btn btn-outline-secondary btn-sm mx-2">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@classModel.Id" class="btn btn-outline-danger btn-sm">Delete</a>
-                        }
+    @if (Model.Classes.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var classModel in Model.Classes)
+            {
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary font-weight-bold">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.Name)</h5>
+                            <p class="card-text">
+                                <strong>School:</strong> @classModel.School<br />
+                                <strong>Homeroom Teacher:</strong> @(string.IsNullOrEmpty(classModel.HomeroomTeacher) ? "N/A" : HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.HomeroomTeacher))<br />
+                                <strong>Start Date:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.StartedOn)<br />
+                                <strong>End Date:</strong> @HtmlEncodeHelper.EscapeHtmlSpecialCharacters(classModel.EndingOn)
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-action="AllStudentsDetails" asp-route-id="@classModel.Id" class="btn btn-outline-primary btn-sm">View Students</a>
+                            @if (this.User.IsAdmin())
+                            {
+                                <a asp-action="Edit" asp-route-classId="@classModel.Id" asp-route-teacherId="@classModel.HomeroomTeacherId" class="btn btn-outline-secondary btn-sm mx-2">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@classModel.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center mt-4">
-            @if (Model.CurrentPage > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@(Model.CurrentPage - 1)" asp-route-searchTerm="@Model.SearchTerm">Previous</a>
-                </li>
             }
+        </div>
 
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@i" asp-route-searchTerm="@Model.SearchTerm">@i</a>
-                </li>
-            }
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@(Model.CurrentPage - 1)" asp-route-searchTerm="@Model.SearchTerm">Previous</a>
+                    </li>
+                }
 
-            @if (Model.CurrentPage < Model.TotalPages)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@(Model.CurrentPage + 1)" asp-route-searchTerm="@Model.SearchTerm">Next</a>
-                </li>
-            }
-        </ul>
-    </nav>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@i" asp-route-searchTerm="@Model.SearchTerm">@i</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-schoolId="@Model.SchoolId" asp-route-page="@(Model.CurrentPage + 1)" asp-route-searchTerm="@Model.SearchTerm">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <p class="text-center text-muted mt-4">No classes found.</p>
+    }
 </div>

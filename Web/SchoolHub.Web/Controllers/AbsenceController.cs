@@ -1,5 +1,6 @@
 ﻿namespace SchoolHub.Web.Controllers
 {
+    using System;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,7 @@
             this.studentService = studentService;
         }
 
-        public async Task<IActionResult> Index(string studentId)
+        public async Task<IActionResult> Index(string studentId, int page = 1, int itemsPerPage = 10)
         {
             if (!this.User.IsAdmin() && !this.User.IsTeacher() && !this.User.IsStudent())
             {
@@ -35,7 +36,9 @@
             }
 
             var student = await this.studentService.GetStudentByIdAsync(studentId);
-            var absences = await this.absenceService.GetAbsencesByStudentIdAsync(studentId);
+            var (absences, totalCount) = await this.absenceService.GetAbsencesByStudentIdAsync(studentId, page, itemsPerPage);
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / itemsPerPage);
 
             return this.View(new StudentAbsencesViewModel
             {
@@ -43,6 +46,9 @@
                 StudentName = student.FullName,
                 ClassId = student.ClassId,
                 Absences = absences,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                ItemsPerPage = itemsPerPage,
             });
         }
 
@@ -53,9 +59,13 @@
                 return this.Unauthorized();
             }
 
-            var groupedAbsences = await this.absenceService.GetGroupedAbsencesByStudentAsync(studentId);
+            var student = await this.studentService.GetStudentByIdAsync(studentId);
 
-            return this.View(groupedAbsences);
+            return this.View(new StudentGroupedAbsencesViewModel
+            {
+                StudentName = student.FullName,
+                GroupedAbsences = await this.absenceService.GetGroupedAbsencesByStudentAsync(studentId),
+            });
         }
 
         [Authorize(Roles = GlobalConstants.TeacherRoleName)]

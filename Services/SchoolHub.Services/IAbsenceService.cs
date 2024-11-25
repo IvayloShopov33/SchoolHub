@@ -10,9 +10,9 @@
     {
         Task<AbsenceFormModel> GetAbsenceByIdAsync(string id);
 
-        Task<List<StudentAbsenceViewModel>> GetAbsencesByStudentIdAsync(string studentId);
+        Task<(List<StudentAbsenceViewModel> Absences, int TotalCount)> GetAbsencesByStudentIdAsync(string studentId, int page, int itemsPerPage);
 
-        Task<IEnumerable<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId);
+        Task<List<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId);
 
         Task AddAbsenceAsync(AbsenceFormModel formModel);
 

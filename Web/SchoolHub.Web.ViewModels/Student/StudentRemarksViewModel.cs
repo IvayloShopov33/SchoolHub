@@ -13,5 +13,11 @@
         public string ClassId { get; set; }
 
         public List<IndexRemarkViewModel> Remarks { get; set; } = new List<IndexRemarkViewModel>();
+
+        public int CurrentPage { get; set; }
+
+        public int TotalPages { get; set; }
+
+        public int ItemsPerPage { get; set; }
     }
 }

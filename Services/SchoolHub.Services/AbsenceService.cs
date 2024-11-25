@@ -28,15 +28,25 @@
                 .To<AbsenceFormModel>()
                 .FirstOrDefaultAsync();
 
-        public async Task<List<StudentAbsenceViewModel>> GetAbsencesByStudentIdAsync(string studentId)
-            => await this.absenceRepository
-                .All()
-                .Where(a => a.StudentId == studentId)
-                .OrderByDescending(x => x.Date)
-                .To<StudentAbsenceViewModel>()
-                .ToListAsync();
+        public async Task<(List<StudentAbsenceViewModel> Absences, int TotalCount)> GetAbsencesByStudentIdAsync(string studentId, int page, int itemsPerPage)
+        {
+            var absences = await this.absenceRepository
+               .AllAsNoTracking()
+               .Where(a => a.StudentId == studentId)
+               .OrderByDescending(x => x.Date)
+               .Skip((page - 1) * itemsPerPage)
+               .Take(itemsPerPage)
+               .To<StudentAbsenceViewModel>()
+               .ToListAsync();
 
-        public async Task<IEnumerable<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId)
+            var totalCount = await this.absenceRepository
+                .AllAsNoTracking()
+                .CountAsync(a => a.StudentId == studentId);
+
+            return (absences, totalCount);
+        }
+
+        public async Task<List<GroupedAbsencesViewModel>> GetGroupedAbsencesByStudentAsync(string studentId)
             => await this.absenceRepository
                 .AllAsNoTracking()
                 .Where(a => a.StudentId == studentId)

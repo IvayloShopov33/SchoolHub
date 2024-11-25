@@ -11,63 +11,72 @@
     };
 }
 
-<div class="container my-5">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>@ViewData["Title"]</h4>
+                </div>
 
-    <form method="post" class="needs-validation" novalidate>
-        <div class="row justify-content-center">
-            <div class="col-md-6 mb-3">
-                <label asp-for="Score" class="form-label font-weight-bold">Score</label>
-                <select asp-for="Score" asp-items="scoreOptions" class="form-select form-control" aria-label="Select Score" required>
-                    @if (Model.Score == 0)
-                    {
-                        <option value="" disabled selected>Select Score</option>
-                    }
-                    else
-                    {
-                        <option value="" disabled>Select Score</option>
-                    }
-                </select>
-                <span asp-validation-for="Score" class="text-danger"></span>
-            </div>
+                <form method="post" class="p-4 border rounded shadow-sm bg-light">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Score" class="form-label font-weight-bold">Score</label>
+                            <select asp-for="Score" asp-items="scoreOptions" class="form-select form-control" aria-label="Select Score" required>
+                                @if (Model.Score == 0)
+                                {
+                                    <option value="" disabled selected>Select Score</option>
+                                }
+                                else
+                                {
+                                    <option value="" disabled>Select Score</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Score" class="text-danger"></span>
+                        </div>
 
-            <div class="col-md-6 mb-3">
-                <label asp-for="Date" class="form-label font-weight-bold">Date</label>
-                <input asp-for="Date" type="date" class="form-control" min="2020-01-01" max="@DateTime.Today.ToString("yyyy-MM-dd")" required />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Date" class="form-label font-weight-bold">Date</label>
+                            <input asp-for="Date" type="date" class="form-control" min="2020-01-01" max="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
 
-            <div class="col-md-6 mb-3">
-                <label asp-for="CategoryId" class="form-label font-weight-bold">Category</label>
-                <select asp-for="CategoryId" class="form-select form-control" aria-label="Select Category" required>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CategoryId" class="form-label font-weight-bold">Category</label>
+                            <select asp-for="CategoryId" class="form-select form-control" aria-label="Select Category" required>
 
-                    @if (Model.CategoryId == 0)
-                    {
-                        <option value="" disabled selected>Select Category</option>
-                    }
-                    else
-                    {
-                        <option value="" disabled>Select Category</option>
-                    }
+                                @if (Model.CategoryId == 0)
+                                {
+                                    <option value="" disabled selected>Select Category</option>
+                                }
+                                else
+                                {
+                                    <option value="" disabled>Select Category</option>
+                                }
 
-                    @foreach (var category in Model.Categories)
-                    {
-                        if (category.Id == Model.CategoryId)
-                        {
-                            <option value="@category.Id" selected>@category.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    if (category.Id == Model.CategoryId)
+                                    {
+                                        <option value="@category.Id" selected>@category.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@Model.StudentId" class="btn btn-secondary">Back</a>
+                        <button type="submit" class="btn btn-primary">@ViewData["Title"]</button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-lg mt-3">@ViewData["Title"]</button>
-        </div>
-    </form>
+    </div>
 </div>

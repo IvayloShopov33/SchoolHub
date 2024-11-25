@@ -1,7 +1,6 @@
 namespace SchoolHub.Web
 {
     using System;
-    using System.Net;
     using System.Reflection;
 
     using Microsoft.AspNetCore.Builder;
@@ -96,7 +95,6 @@ namespace SchoolHub.Web
             }
 
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
-
 
             if (app.Environment.IsDevelopment())
             {
