@@ -90,7 +90,7 @@
             return teacher.SubjectId;
         }
 
-        public async Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId)
+        public async Task<List<IndexTeacherViewModel>> GetAllTeachersBySchoolIdAsync(string schoolId)
             => await this.teacherRepository
                 .All()
                 .Where(x => !x.IsDeleted && x.SchoolId == schoolId)

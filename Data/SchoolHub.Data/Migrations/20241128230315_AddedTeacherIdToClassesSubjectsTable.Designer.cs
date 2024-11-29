@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolHub.Data;
 
@@ -11,13 +12,15 @@ using SchoolHub.Data;
 namespace SchoolHub.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128230315_AddedTeacherIdToClassesSubjectsTable")]
+    partial class AddedTeacherIdToClassesSubjectsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -375,6 +378,26 @@ namespace SchoolHub.Data.Migrations
                     b.HasIndex("SchoolId");
 
                     b.ToTable("Classes");
+                });
+
+            modelBuilder.Entity("SchoolHub.Data.Models.ClassSubject", b =>
+                {
+                    b.Property<string>("ClassId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeacherId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ClassId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("ClassesSubjects");
                 });
 
             modelBuilder.Entity("SchoolHub.Data.Models.Grade", b =>
@@ -794,6 +817,31 @@ namespace SchoolHub.Data.Migrations
                     b.Navigation("School");
                 });
 
+            modelBuilder.Entity("SchoolHub.Data.Models.ClassSubject", b =>
+                {
+                    b.HasOne("SchoolHub.Data.Models.Class", "Class")
+                        .WithMany("ClassesSubjects")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SchoolHub.Data.Models.Subject", "Subject")
+                        .WithMany("ClassesSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SchoolHub.Data.Models.Teacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("SchoolHub.Data.Models.Grade", b =>
                 {
                     b.HasOne("SchoolHub.Data.Models.Category", "Category")
@@ -924,6 +972,8 @@ namespace SchoolHub.Data.Migrations
 
             modelBuilder.Entity("SchoolHub.Data.Models.Class", b =>
                 {
+                    b.Navigation("ClassesSubjects");
+
                     b.Navigation("Students");
                 });
 
@@ -948,6 +998,8 @@ namespace SchoolHub.Data.Migrations
             modelBuilder.Entity("SchoolHub.Data.Models.Subject", b =>
                 {
                     b.Navigation("Absences");
+
+                    b.Navigation("ClassesSubjects");
 
                     b.Navigation("Grades");
 

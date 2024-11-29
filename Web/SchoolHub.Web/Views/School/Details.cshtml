@@ -1,7 +1,19 @@
 ﻿@model DetailsSchoolViewModel
 
+@using SchoolHub.Services
+@inject ITeacherService teacherService
+
 @{
     ViewBag.Title = $"{Model.Name}";
+
+    string teacherId = null;
+    string schoolId = null;
+
+    if (this.User.IsTeacher())
+    {
+        teacherId = await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId());
+        schoolId = await this.teacherService.GetSchoolIdByTeacherIdAsync(teacherId);
+    }
 }
 
 <h2 class="text-center">@HtmlEncodeHelper.EscapeHtmlSpecialCharacters(ViewBag.Title)</h2>
@@ -34,7 +46,7 @@
         </div>
         <div class="card-footer text-center">
             <a asp-controller="School" asp-action="Index" class="btn btn-secondary">Back to List</a>
-            @if (this.User.IsTeacher())
+            @if (this.User.IsTeacher() && Model.Id == schoolId)
             {
                 <a asp-controller="Class" asp-action="Index" asp-route-schoolId="@Model.Id" class="btn btn-info">All Classes</a>
             }

@@ -31,7 +31,7 @@
         public async Task<IActionResult> Index(string schoolId, int page = 1, string searchTerm = "")
         {
             const int PageSize = 3;
-            var teachers = await this.teacherService.AllTeachersAsync(schoolId);
+            var teachers = await this.teacherService.GetAllTeachersBySchoolIdAsync(schoolId);
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {

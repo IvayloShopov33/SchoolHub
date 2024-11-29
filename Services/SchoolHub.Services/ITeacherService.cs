@@ -18,7 +18,7 @@
 
         Task<int> GetSubjectIdByTeacherIdAsync(string teacherId);
 
-        Task<List<IndexTeacherViewModel>> AllTeachersAsync(string schoolId);
+        Task<List<IndexTeacherViewModel>> GetAllTeachersBySchoolIdAsync(string schoolId);
 
         Task<string> AddTeacherAsync(TeacherFormModel formModel);
 

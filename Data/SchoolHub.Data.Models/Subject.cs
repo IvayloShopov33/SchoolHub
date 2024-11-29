@@ -27,7 +27,5 @@
         public virtual ICollection<Absence> Absences { get; set; } = new HashSet<Absence>();
 
         public virtual ICollection<Remark> Remarks { get; set; } = new HashSet<Remark>();
-
-        public virtual ICollection<ClassSubject> ClassesSubjects { get; set; } = new HashSet<ClassSubject>();
     }
 }
