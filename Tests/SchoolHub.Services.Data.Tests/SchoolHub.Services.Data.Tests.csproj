@@ -29,6 +29,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\SchoolHub.Data\SchoolHub.Data.csproj" />
     <ProjectReference Include="..\..\Services\SchoolHub.Services.Data\SchoolHub.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Services\SchoolHub.Services\SchoolHub.Services.csproj" />
+    <ProjectReference Include="..\..\Web\SchoolHub.Web.ViewModels\SchoolHub.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
