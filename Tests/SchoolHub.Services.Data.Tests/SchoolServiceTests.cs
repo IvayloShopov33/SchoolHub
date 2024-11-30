@@ -17,8 +17,8 @@
 
     public class SchoolServiceTests
     {
-        private string firstSchoolId = Guid.NewGuid().ToString();
-        private string secondSchoolId = Guid.NewGuid().ToString();
+        private readonly string firstSchoolId = Guid.NewGuid().ToString();
+        private readonly string secondSchoolId = Guid.NewGuid().ToString();
 
         public SchoolServiceTests()
         {
@@ -31,7 +31,7 @@
         public async Task AllAsync_ShouldReturnAllSchools()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_AllAsync");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_AllAsync");
             var service = new SchoolService(mockRepo);
 
             // Act
@@ -47,7 +47,7 @@
         public async Task SearchAsync_ShouldReturnMatchingSchools()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_SearchAsync");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_SearchAsync");
             var service = new SchoolService(mockRepo);
 
             // Act
@@ -62,7 +62,7 @@
         public async Task GetSchoolDetailsByIdAsync_ShouldReturnCorrectSchool()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_GetSchoolDetails");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_GetSchoolDetails");
             var service = new SchoolService(mockRepo);
 
             // Act
@@ -77,7 +77,7 @@
         public async Task AddSchoolAsync_ShouldAddNewSchool()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_AddSchoolAsync");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_AddSchoolAsync");
             var service = new SchoolService(mockRepo);
             var newSchool = new SchoolFormModel
             {
@@ -99,7 +99,7 @@
         public async Task EditSchoolAsync_ShouldUpdateSchoolDetails()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_EditSchoolAsync");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_EditSchoolAsync");
             var service = new SchoolService(mockRepo);
             var updatedSchool = new SchoolFormModel
             {
@@ -123,7 +123,7 @@
         public async Task DeleteSchoolAsync_ShouldMarkSchoolAsDeleted()
         {
             // Arrange
-            var mockRepo = await this.GetMockSchoolRepository("TestDb_DeleteSchoolAsync");
+            var mockRepo = await this.GetMockSchoolRepositoryAsync("TestDb_DeleteSchoolAsync");
             var service = new SchoolService(mockRepo);
             var deleteModel = new DeleteSchoolViewModel { Id = this.firstSchoolId };
 
@@ -136,7 +136,7 @@
             Assert.DoesNotContain(schools, s => s.Id == this.firstSchoolId);
         }
 
-        private async Task<IDeletableEntityRepository<School>> GetMockSchoolRepository(string dbName)
+        private async Task<IDeletableEntityRepository<School>> GetMockSchoolRepositoryAsync(string dbName)
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: dbName)

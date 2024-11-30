@@ -19,8 +19,9 @@
     {
         private readonly Mock<ISchoolService> mockSchoolService;
         private readonly SchoolController controller;
-        private string firstSchoolId = Guid.NewGuid().ToString();
-        private string secondSchoolId = Guid.NewGuid().ToString();
+
+        private readonly string firstSchoolId = Guid.NewGuid().ToString();
+        private readonly string secondSchoolId = Guid.NewGuid().ToString();
 
         public SchoolControllerTests()
         {
