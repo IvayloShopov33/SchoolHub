@@ -1,5 +1,6 @@
 ﻿namespace SchoolHub.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -79,6 +80,11 @@
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == classId && !x.IsDeleted);
 
+            if (@class == null)
+            {
+                throw new ArgumentException($"There is no class with id - {classId}.");
+            }
+
             @class.HomeroomTeacherId = homeroomTeacherId;
             await this.classRepository.SaveChangesAsync();
         }
@@ -99,6 +105,11 @@
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
+            if (classById == null)
+            {
+                throw new ArgumentException($"There is no class with the id - {id}.");
+            }
+
             classById.Name = formModel.Name;
             classById.StartedOn = formModel.StartedOn;
             classById.EndingOn = formModel.EndingOn;
@@ -111,6 +122,11 @@
             var @class = await this.classRepository
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == model.Id && !x.IsDeleted);
+
+            if (@class == null)
+            {
+                throw new ArgumentException($"There is no such class.");
+            }
 
             @class.IsDeleted = true;
             await this.classRepository.SaveChangesAsync();

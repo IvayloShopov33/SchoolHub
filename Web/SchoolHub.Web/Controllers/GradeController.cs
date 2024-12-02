@@ -45,7 +45,7 @@
                 StudentId = studentId,
                 StudentName = student.FullName,
                 ClassId = student.ClassId,
-                SubjectGrades = this.studentService.GetStudentGradesGroupBySubjectAsync(student),
+                SubjectGrades = this.studentService.GetStudentGradesGroupBySubject(student),
             });
         }
 

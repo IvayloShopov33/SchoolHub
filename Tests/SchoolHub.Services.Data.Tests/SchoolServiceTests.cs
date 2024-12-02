@@ -173,17 +173,6 @@
                         context.Schools.Add(school);
                     });
 
-            mockRepo.Setup(r => r.Delete(It.IsAny<School>()))
-                    .Callback((School school) =>
-                    {
-                        var entity = context.Schools.FirstOrDefault(s => s.Id == school.Id);
-                        if (entity != null)
-                        {
-                            entity.IsDeleted = true;
-                            entity.DeletedOn = DateTime.UtcNow;
-                        }
-                    });
-
             mockRepo.Setup(r => r.SaveChangesAsync())
                     .Callback(async () => await context.SaveChangesAsync());
 

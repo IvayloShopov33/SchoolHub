@@ -69,6 +69,29 @@
         }
 
         [Fact]
+        public async Task GetGradeFurtherDetailsByIdAsync_ShouldReturnCorrectDetails_WhenGradeExists()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockGradeRepositoryAsync("GradeTestDb_GetGradeFurtherDetailsByIdAsync");
+            var gradeService = new GradeService(mockRepo);
+
+            // Act
+            var result = await gradeService.GetGradeFurtherDetailsByIdAsync(this.firstGradeId);
+
+            // Assert
+            Assert.NotNull(result);
+
+            Assert.Equal(this.firstGradeId, result.Id);
+            Assert.Equal(this.firstTeacherId, result.TeacherId);
+            Assert.Equal(this.firstStudentId, result.StudentId);
+
+            Assert.Equal(1, result.SubjectId);
+            Assert.Equal(1, result.CategoryId);
+
+            Assert.Equal(6, result.Score);
+        }
+
+        [Fact]
         public async Task AddGradeAsync_ShouldAddGradeSuccessfully()
         {
             // Arrange

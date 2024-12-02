@@ -1,5 +1,6 @@
 ﻿namespace SchoolHub.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -75,6 +76,11 @@
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
+            if (absenceById == null)
+            {
+                throw new ArgumentException($"There is no absence with the id - {id}.");
+            }
+
             absenceById.Date = formModel.Date;
             absenceById.CategoryId = formModel.CategoryId;
             absenceById.SubjectId = formModel.SubjectId;
@@ -89,6 +95,11 @@
             var absenceById = await this.absenceRepository
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+
+            if (absenceById == null)
+            {
+                throw new ArgumentException($"There is no absence with the id - {id}.");
+            }
 
             absenceById.IsDeleted = true;
             await this.absenceRepository.SaveChangesAsync();

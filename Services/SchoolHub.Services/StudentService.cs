@@ -68,7 +68,7 @@
                     .ThenInclude(g => g.Teacher)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
-        public List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student)
+        public List<SubjectGradesViewModel> GetStudentGradesGroupBySubject(Student student)
             => student.Grades
                 .GroupBy(g => g.Subject.Name)
                     .Select(g => new SubjectGradesViewModel
@@ -160,6 +160,11 @@
                 .Where(x => x.Id == id && !x.IsDeleted)
                 .FirstOrDefaultAsync();
 
+            if (studentById == null)
+            {
+                throw new ArgumentException($"There is no student with the id - {id}.");
+            }
+
             studentById.FullName = formModel.FullName;
             studentById.BirthDate = formModel.BirthDate;
             studentById.ClassId = formModel.ClassId;
@@ -174,6 +179,11 @@
                 .All()
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == model.Id && !x.IsDeleted);
+
+            if (student == null)
+            {
+                throw new ArgumentException($"There is no such class.");
+            }
 
             student.IsDeleted = true;
             await this.userManager.RemoveFromRoleAsync(student.User, GlobalConstants.StudentRoleName);

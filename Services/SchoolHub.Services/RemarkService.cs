@@ -1,5 +1,6 @@
 ﻿namespace SchoolHub.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -75,6 +76,11 @@
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
+            if (remarkById == null)
+            {
+                throw new ArgumentException($"There is no remark with the id - {id}.");
+            }
+
             remarkById.Comment = formModel.Comment;
             remarkById.Date = formModel.Date;
             remarkById.IsPraise = formModel.IsPraise;
@@ -90,6 +96,11 @@
             var remarkById = await this.remarkRepository
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+
+            if (remarkById == null)
+            {
+                throw new ArgumentException($"There is no remark with the id - {id}.");
+            }
 
             remarkById.IsDeleted = true;
             await this.remarkRepository.SaveChangesAsync();

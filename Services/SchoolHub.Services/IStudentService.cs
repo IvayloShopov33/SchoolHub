@@ -20,7 +20,7 @@
 
         Task<Student> GetStudentDetailsByIdAsync(string id);
 
-        List<SubjectGradesViewModel> GetStudentGradesGroupBySubjectAsync(Student student);
+        List<SubjectGradesViewModel> GetStudentGradesGroupBySubject(Student student);
 
         Task<StudentStatisticsViewModel> GetStudentStatisticsAsync(string studentId);
 

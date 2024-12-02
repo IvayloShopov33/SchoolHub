@@ -30,11 +30,64 @@
         public async Task<bool> IsTeacherAsync(string userId)
             => await this.teacherRepository.AllAsNoTracking().AnyAsync(x => x.UserId == userId && !x.IsDeleted);
 
+        public async Task<TeacherFormModel> GetTeacherByIdAsync(string id)
+            => await this.teacherRepository
+                .All()
+                .Where(x => x.Id == id && !x.IsDeleted)
+                .To<TeacherFormModel>()
+                .FirstOrDefaultAsync();
+
+        public async Task<TeacherFormModel> GetTeacherByUserIdAsync(string userId)
+            => await this.teacherRepository
+                .All()
+                .Where(x => x.UserId == userId && !x.IsDeleted)
+                .To<TeacherFormModel>()
+                .FirstOrDefaultAsync();
+
+        public async Task<string> GetTeacherIdByUserIdAsync(string userId)
+        {
+            var teacher = await this.teacherRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.UserId == userId && !x.IsDeleted);
+
+            return teacher.Id;
+        }
+
+        public async Task<string> GetSchoolIdByTeacherIdAsync(string teacherId)
+        {
+            var teacher = await this.teacherRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
+
+            return teacher.SchoolId;
+        }
+
+        public async Task<int> GetSubjectIdByTeacherIdAsync(string teacherId)
+        {
+            var teacher = await this.teacherRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => (x.Id == teacherId || x.UserId == teacherId) && !x.IsDeleted);
+
+            return teacher.SubjectId;
+        }
+
+        public async Task<List<IndexTeacherViewModel>> GetAllTeachersBySchoolIdAsync(string schoolId)
+            => await this.teacherRepository
+                .All()
+                .Where(x => !x.IsDeleted && x.SchoolId == schoolId)
+                .To<IndexTeacherViewModel>()
+                .ToListAsync();
+
         public async Task SetClassIdByHomeroomTeacherIdAsync(string homeroomTeacherId, string classId)
         {
             var teacher = await this.teacherRepository
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == homeroomTeacherId && !x.IsDeleted);
+
+            if (teacher == null)
+            {
+                throw new ArgumentException($"There is no teacher with id - {homeroomTeacherId}.");
+            }
 
             teacher.ClassId = classId;
             await this.teacherRepository.SaveChangesAsync();
@@ -72,31 +125,6 @@
             return teacher.UserId;
         }
 
-        public async Task<string> GetSchoolIdByTeacherIdAsync(string teacherId)
-        {
-            var teacher = await this.teacherRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
-
-            return teacher.SchoolId;
-        }
-
-        public async Task<int> GetSubjectIdByTeacherIdAsync(string teacherId)
-        {
-            var teacher = await this.teacherRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => (x.Id == teacherId || x.UserId == teacherId) && !x.IsDeleted);
-
-            return teacher.SubjectId;
-        }
-
-        public async Task<List<IndexTeacherViewModel>> GetAllTeachersBySchoolIdAsync(string schoolId)
-            => await this.teacherRepository
-                .All()
-                .Where(x => !x.IsDeleted && x.SchoolId == schoolId)
-                .To<IndexTeacherViewModel>()
-                .ToListAsync();
-
         public async Task<string> AddTeacherAsync(TeacherFormModel formModel)
         {
             var teacher = AutoMapperConfig.MapperInstance.Map<Teacher>(formModel);
@@ -113,6 +141,11 @@
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
+            if (teacherById == null)
+            {
+                throw new ArgumentException($"There is no teacher with id - {id}.");
+            }
+
             teacherById.FullName = formModel.FullName;
             teacherById.BirthDate = formModel.BirthDate;
             teacherById.ClassId = formModel.ClassId;
@@ -128,32 +161,14 @@
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == model.Id && !x.IsDeleted);
 
+            if (teacher == null)
+            {
+                throw new ArgumentException($"There is no such teacher.");
+            }
+
             teacher.IsDeleted = true;
             await this.userManager.RemoveFromRoleAsync(teacher.User, GlobalConstants.TeacherRoleName);
             await this.teacherRepository.SaveChangesAsync();
-        }
-
-        public async Task<TeacherFormModel> GetTeacherByIdAsync(string id)
-            => await this.teacherRepository
-                .All()
-                .Where(x => x.Id == id && !x.IsDeleted)
-                .To<TeacherFormModel>()
-                .FirstOrDefaultAsync();
-
-        public async Task<TeacherFormModel> GetTeacherByUserIdAsync(string userId)
-            => await this.teacherRepository
-                .All()
-                .Where(x => x.UserId == userId && !x.IsDeleted)
-                .To<TeacherFormModel>()
-                .FirstOrDefaultAsync();
-
-        public async Task<string> GetTeacherIdByUserIdAsync(string userId)
-        {
-            var teacher = await this.teacherRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.UserId == userId && !x.IsDeleted);
-
-            return teacher.Id;
         }
 
         private async Task RefreshSignInAsync(ApplicationUser user)
