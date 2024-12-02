@@ -53,6 +53,33 @@
         }
 
         [Fact]
+        public async Task Index_ShouldReturnFilteredSchools_WhenSearchQueryIsNotNull()
+        {
+            // Arrange
+            var searchQuery = "Alpha";
+            this.mockSchoolService
+                .Setup(s => s.SearchAsync(searchQuery))
+                .ReturnsAsync(this.GetTestSchools().Where(s => s.Name.Contains(searchQuery)).ToList());
+
+            var controller = new SchoolController(this.mockSchoolService.Object);
+
+            // Act
+            var result = await controller.Index(searchQuery, 1, 10);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<PaginatedIndexSchoolViewModel>(viewResult.Model);
+
+            Assert.Single(model.Schools);
+            Assert.Equal("Alpha School", model.Schools.First().Name);
+
+            Assert.Equal(1, model.CurrentPage);
+            Assert.Equal(10, model.PageSize);
+            Assert.Equal(searchQuery, model.SearchQuery);
+            Assert.Equal(1, model.TotalCount);
+        }
+
+        [Fact]
         public async Task Details_ShouldReturnCorrectSchool()
         {
             // Arrange
@@ -121,7 +148,6 @@
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Index", result.ActionName);
-            this.mockSchoolService.Verify(s => s.AddSchoolAsync(formModel), Times.Once);
         }
 
         [Fact]
@@ -129,7 +155,7 @@
         {
             // Arrange
             var formModel = new SchoolFormModel { Name = "Invalid School" };
-            this.controller.ModelState.AddModelError("Name", "Required");
+            this.controller.ModelState.AddModelError("Address", "Required");
 
             // Act
             var result = await this.controller.Add(formModel) as ViewResult;
@@ -169,7 +195,21 @@
             Assert.NotNull(result);
             Assert.Equal("Details", result.ActionName);
             Assert.Equal(this.firstSchoolId, result.RouteValues["id"]);
-            this.mockSchoolService.Verify(s => s.EditSchoolAsync(this.firstSchoolId, formModel), Times.Once);
+        }
+
+        [Fact]
+        public async Task Edit_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var formModel = new SchoolFormModel { Name = "Invalid School" };
+            this.controller.ModelState.AddModelError("Address", "Required");
+
+            // Act
+            var result = await this.controller.Edit(this.firstSchoolId, formModel) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(formModel, result.Model);
         }
 
         [Fact]

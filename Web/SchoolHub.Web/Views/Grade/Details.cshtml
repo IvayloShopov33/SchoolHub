@@ -35,8 +35,12 @@
         <div class="card-footer text-center">
             @if (this.User.IsAdmin() || this.User.IsTeacher())
             {
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mx-2">Edit</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mx-2" onclick="return confirm('Are you sure you want to delete this absence?');">Delete</a>
+                @if (this.User.IsTeacher())
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm mx-2">Edit</a>
+                }
+
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm mx-2" onclick="return confirm('Are you sure you want to delete this grade?');">Delete</a>
             }
         </div>
     </div>
