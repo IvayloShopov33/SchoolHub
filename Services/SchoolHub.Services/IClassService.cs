@@ -27,6 +27,8 @@
 
         Task SetHomeroomTeacherIdByClassIdAsync(string classId, string homeroomTeacherId);
 
+        Task SetHomeroomTeacherIdToNullByClassIdAsync(string classId);
+
         Task<string> AddClassAsync(ClassFormModel formModel);
 
         Task EditClassByIdAsync(string id, ClassFormModel formModel);

@@ -9,6 +9,8 @@
 
     public class ClassFormModel : IMapTo<SchoolHub.Data.Models.Class>, IMapFrom<SchoolHub.Data.Models.Class>
     {
+        public string Id { get; set; }
+
         [Required]
         [StringLength(ClassNameMaxLength, MinimumLength = ClassNameMinLength)]
         public string Name { get; set; } = null!;
@@ -17,7 +19,7 @@
         public DateTime StartedOn { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public DateTime EndingOn { get; set; }
+        public DateTime EndingOn { get; set; } = DateTime.UtcNow.AddYears(1);
 
         public string SchoolId { get; set; } = null!;
 

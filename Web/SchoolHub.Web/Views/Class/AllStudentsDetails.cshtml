@@ -2,6 +2,7 @@
 
 @using SchoolHub.Services
 @inject ITeacherService teacherService
+@inject IClassService classService
 
 @{
     ViewData["Title"] = "All Students";
@@ -13,6 +14,9 @@
     {
         teacherId = await this.teacherService.GetTeacherIdByUserIdAsync(this.User.GetId());
     }
+
+    var classById = await this.classService.GetClassByIdAsync(Model.Id);
+    var students = await this.classService.GetAllStudentsByClassIdAsync(Model.Id);
 }
 
 <div class="container my-5">
@@ -28,6 +32,13 @@
             }
             else
             {
+                @if (students.Any(x => x.Username == this.User.Identity.Name) || classById.HomeroomTeacherId == teacherId)
+                {
+                    <div class="form-group text-center mt-4">
+                        <a asp-controller="Class" asp-action="Chat" asp-route-classId="@Model.Id" class="btn btn-info mb-2">Class Chat</a>
+                    </div>
+                }
+
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead class="thead-light">

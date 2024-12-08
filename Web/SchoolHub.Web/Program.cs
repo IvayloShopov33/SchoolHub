@@ -21,6 +21,7 @@ namespace SchoolHub.Web
     using SchoolHub.Services.Data;
     using SchoolHub.Services.Mapping;
     using SchoolHub.Services.Messaging;
+    using SchoolHub.Web.Hubs;
     using SchoolHub.Web.ViewModels;
 
     public class Program
@@ -65,6 +66,8 @@ namespace SchoolHub.Web
 
             services.AddAutoMapper(typeof(Program));
 
+            services.AddSignalR();
+
             // Data repositories
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -82,6 +85,7 @@ namespace SchoolHub.Web
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IAbsenceService, AbsenceService>();
             services.AddTransient<IRemarkService, RemarkService>();
+            services.AddTransient<IChatService, ChatService>();
         }
 
         private static void Configure(WebApplication app)
@@ -121,6 +125,7 @@ namespace SchoolHub.Web
             app.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
             app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+            app.MapHub<ChatHub>("/chatHub");
         }
     }
 }

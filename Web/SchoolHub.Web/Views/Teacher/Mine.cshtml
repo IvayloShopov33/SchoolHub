@@ -23,6 +23,13 @@
                         <p class="card-text"><strong>Students:</strong> @Model.StudentsCount</p>
                     </div>
                 </div>
+
+                @if (Model.Id != null)
+                {
+                    <div class="text-center">
+                        <a asp-controller="Class" asp-action="AllStudentsDetails" asp-route-id="@Model.Id" class="btn btn-outline-primary mt-2">View Students</a>
+                    </div>
+                }
             }
             else
             {

@@ -26,6 +26,8 @@
 
         Task<string> SetTeacherUserByFullNameAndBirthDateAsync(string userId, string fullName, DateTime birthDate);
 
+        Task SetClassIdToNullByTeacherIdAsync(string teacherId);
+
         Task<string> AddTeacherAsync(TeacherFormModel formModel);
 
         Task EditTeacherAsync(string id, TeacherFormModel formModel);

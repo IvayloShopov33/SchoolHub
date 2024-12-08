@@ -8,6 +8,8 @@
 
     public class MyClassViewModel : IMapFrom<SchoolHub.Data.Models.Class>, IHaveCustomMappings
     {
+        public string Id { get; set; }
+
         public string Name { get; set; } = null!;
 
         public string StartedOn { get; set; } = null!;
@@ -23,6 +25,7 @@
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<SchoolHub.Data.Models.Class, MyClassViewModel>()
+                .ForMember(x => x.Id, mo => mo.MapFrom(y => y.Id))
                 .ForMember(x => x.StartedOn, mo => mo.MapFrom(y => y.StartedOn.ToString(DateTimeFormat)))
                 .ForMember(x => x.EndingOn, mo => mo.MapFrom(y => y.EndingOn.ToString(DateTimeFormat)))
                 .ForMember(x => x.School, mo => mo.MapFrom(y => y.School.Name))

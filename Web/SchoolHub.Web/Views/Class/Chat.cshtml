@@ -1,0 +1,106 @@
+﻿@using SchoolHub.Services
+@inject IStudentService studentService
+@inject ITeacherService teacherService
+
+@{
+    ViewData["Title"] = "Class Chat";
+    var classId = ViewBag.ClassId;
+    var userId = ViewBag.UserId;
+    string userFullName = null;
+
+    var student = await this.studentService.GetStudentByUserIdAsync(userId);
+    if (student != null)
+    {
+        userFullName = student.FullName;
+    }
+
+    var teacher = await this.teacherService.GetTeacherByUserIdAsync(userId);
+    if (teacher != null)
+    {
+        userFullName = teacher.FullName;
+    }
+}
+
+<h2>@ViewBag.Class's Class Chat</h2>
+<div id="chatWindow">
+    <!-- Messages will appear here -->
+</div>
+
+<input type="text" id="messageInput" placeholder="Type a message..." />
+<button id="sendButton">Send</button>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.15/signalr.min.js"></script>
+    <script>
+        const classId = "@classId";
+        const senderId = "@userId";
+        const senderName = "@userFullName";
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        // Load message history
+        connection.on("FetchMessageHistory", function (messages) {
+            const chatWindow = document.getElementById("chatWindow");
+            chatWindow.innerHTML = ""; // Clear existing messages
+        
+            messages.forEach(msg => {
+                const msgDiv = document.createElement("div");
+        
+                const senderName = document.createElement("strong");
+                senderName.textContent = `${msg.senderName}: `;
+                msgDiv.appendChild(senderName);
+        
+                const messageContent = document.createTextNode(`"${msg.message}" `);
+                msgDiv.appendChild(messageContent);
+        
+                const timestamp = document.createElement("small");
+                timestamp.textContent = msg.timestamp;
+                msgDiv.appendChild(timestamp);
+        
+                chatWindow.appendChild(msgDiv);
+            });
+        });
+        
+        // Receive group messages
+        connection.on("ReceiveMessage", function (senderName, message, timestamp) {
+            const chatWindow = document.getElementById("chatWindow");
+            const msgDiv = document.createElement("div");
+        
+            const sender = document.createElement("strong");
+            sender.textContent = `${senderName}: `;
+            msgDiv.appendChild(sender);
+        
+            const content = document.createTextNode(`"${message}" `);
+            msgDiv.appendChild(content);
+        
+            const time = document.createElement("small");
+            time.textContent = timestamp;
+            msgDiv.appendChild(time);
+        
+            chatWindow.appendChild(msgDiv);
+        });
+
+        connection.start().then(function () {
+            connection.invoke("JoinClass", classId);
+            connection.invoke("FetchMessageHistory", classId);
+        });
+
+        // Send a group message
+        document.getElementById("sendButton").addEventListener("click", function () {
+            const message = document.getElementById("messageInput").value;
+            if (!message.trim()) {
+                alert("Message cannot be empty!");
+                return;
+            }
+
+            connection.invoke("SendMessage", classId, senderId, senderName, message)
+                .then(() => {
+                    document.getElementById("messageInput").value = ""; // Clear the input
+                })
+                .catch(function (err) {
+                    console.error(err.toString());
+                });
+        });
+    </script>
+}

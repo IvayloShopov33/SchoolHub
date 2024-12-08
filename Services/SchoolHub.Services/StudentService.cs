@@ -186,7 +186,12 @@
             }
 
             student.IsDeleted = true;
-            await this.userManager.RemoveFromRoleAsync(student.User, GlobalConstants.StudentRoleName);
+
+            if (student.User != null)
+            {
+                await this.userManager.RemoveFromRoleAsync(student.User, GlobalConstants.StudentRoleName);
+            }
+
             await this.studentRepository.SaveChangesAsync();
         }
 

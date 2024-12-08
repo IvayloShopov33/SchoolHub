@@ -17,10 +17,12 @@
     public class ClassService : IClassService
     {
         private readonly IDeletableEntityRepository<Class> classRepository;
+        private readonly ITeacherService teacherService;
 
-        public ClassService(IDeletableEntityRepository<Class> classRepository)
+        public ClassService(IDeletableEntityRepository<Class> classRepository, ITeacherService teacherService)
         {
             this.classRepository = classRepository;
+            this.teacherService = teacherService;
         }
 
         public async Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId)
@@ -89,6 +91,21 @@
             await this.classRepository.SaveChangesAsync();
         }
 
+        public async Task SetHomeroomTeacherIdToNullByClassIdAsync(string classId)
+        {
+            var @class = await this.classRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == classId && !x.IsDeleted);
+
+            if (@class == null)
+            {
+                throw new ArgumentException($"There is no such class.");
+            }
+
+            @class.HomeroomTeacherId = null;
+            await this.classRepository.SaveChangesAsync();
+        }
+
         public async Task<string> AddClassAsync(ClassFormModel formModel)
         {
             var @class = AutoMapperConfig.MapperInstance.Map<Class>(formModel);
@@ -128,6 +145,12 @@
                 throw new ArgumentException($"There is no such class.");
             }
 
+            if (@class.HomeroomTeacherId != null)
+            {
+                await this.teacherService.SetClassIdToNullByTeacherIdAsync(@class.HomeroomTeacherId);
+            }
+
+            @class.HomeroomTeacherId = null;
             @class.IsDeleted = true;
             await this.classRepository.SaveChangesAsync();
         }

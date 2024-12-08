@@ -35,5 +35,8 @@
         // Remark
         public const byte RemarkDescriptionMinLength = 15;
         public const int RemarkDescriptionMaxLength = 625;
+
+        // Chat
+        public const int ChatMessageMaxLength = 600;
     }
 }

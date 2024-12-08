@@ -34,10 +34,11 @@
                         {
                             @if (string.IsNullOrEmpty(teacher.Class))
                             {
-                                <a asp-controller="Class" asp-action="Add" asp-route-teacherId="@teacher.Id" class="btn btn-primary btn-sm">Assign Class</a>
+                                <a asp-controller="Class" asp-action="Add" asp-route-teacherId="@teacher.Id" class="btn btn-primary btn-sm mb-1">Assign New Class</a>
+                                <a asp-controller="Teacher" asp-action="AssignExistingClass" asp-route-teacherId="@teacher.Id" class="btn btn-info btn-sm mb-1">Assign Existing Class</a>
                             }
 
-                            <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@teacher.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@teacher.Id" class="btn btn-warning btn-sm mb-1">Edit</a>
                             <a asp-controller="Teacher" asp-action="Delete" asp-route-id="@teacher.Id" class="btn btn-danger btn-sm">Delete</a>
                         }
                     </div>

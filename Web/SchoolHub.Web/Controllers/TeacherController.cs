@@ -6,11 +6,12 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-
+    using Microsoft.EntityFrameworkCore;
     using SchoolHub.Common;
     using SchoolHub.Services;
     using SchoolHub.Services.Mapping;
     using SchoolHub.Web.Infrastructure;
+    using SchoolHub.Web.ViewModels.Class;
     using SchoolHub.Web.ViewModels.Teacher;
 
     [Authorize]
@@ -69,6 +70,45 @@
             var teacherClassViewModel = await this.classService.GetTeacherClassByIdAsync(teacher.ClassId);
 
             return this.View(teacherClassViewModel);
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> AssignExistingClass(string teacherId)
+        {
+            var teacher = await this.teacherService.GetTeacherByIdAsync(teacherId);
+
+            if (teacher == null)
+            {
+                return this.NotFound("Teacher not found.");
+            }
+
+            var classes = await this.classService.GetAllClassesBySchoolIdAsync(teacher.SchoolId)
+                .Where(x => x.HomeroomTeacherId == null)
+                .To<ClassFormModel>()
+                .ToListAsync();
+
+            var viewModel = new AssignExistingClassFormModel
+            {
+                TeacherId = teacherId,
+                Classes = classes,
+            };
+
+            return this.View(viewModel);
+        }
+
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        [HttpPost]
+        public async Task<IActionResult> AssignExistingClass(AssignExistingClassFormModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            await this.classService.SetHomeroomTeacherIdByClassIdAsync(model.SelectedClassId, model.TeacherId);
+            await this.teacherService.SetClassIdByHomeroomTeacherIdAsync(model.TeacherId, model.SelectedClassId);
+
+            return this.RedirectToAction("AllStudentsDetails", "Class", new { id = model.SelectedClassId });
         }
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]

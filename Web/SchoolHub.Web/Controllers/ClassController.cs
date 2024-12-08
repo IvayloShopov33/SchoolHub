@@ -67,9 +67,29 @@
             var classById = await this.classService.GetClassByIdAsync(id);
 
             var classWithStudentsViewModel = AutoMapperConfig.MapperInstance.Map<ClassWithStudentsViewModel>(classById);
+            classWithStudentsViewModel.Id = id;
             classWithStudentsViewModel.Students = await this.classService.GetAllStudentsByClassIdAsync(id);
 
             return this.View(classWithStudentsViewModel);
+        }
+
+        public async Task<IActionResult> Chat(string classId)
+        {
+            if (this.User.IsAdmin())
+            {
+                return this.Unauthorized();
+            }
+
+            var classById = await this.classService.GetClassByIdAsync(classId);
+            var teacherById = await this.teacherService.GetTeacherByIdAsync(classById.HomeroomTeacherId);
+
+            this.ViewBag.ClassId = classId;
+            this.ViewBag.Class = classById.Name;
+            this.ViewBag.Teacher = teacherById.FullName;
+
+            this.ViewBag.UserId = this.User.GetId();
+
+            return this.View();
         }
 
         [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
@@ -103,6 +123,8 @@
                 return this.View(formModel);
             }
 
+            formModel.Id = Guid.NewGuid().ToString();
+
             var classId = await this.classService.AddClassAsync(formModel);
             await this.teacherService.SetClassIdByHomeroomTeacherIdAsync(teacherId, classId);
 
@@ -133,6 +155,7 @@
                 return this.View("Add", formModel);
             }
 
+            formModel.Id = Guid.NewGuid().ToString();
             await this.classService.AddClassAsync(formModel);
 
             return this.RedirectToAction("Index", new { schoolId });

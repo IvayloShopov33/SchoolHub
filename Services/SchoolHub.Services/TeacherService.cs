@@ -125,6 +125,21 @@
             return teacher.UserId;
         }
 
+        public async Task SetClassIdToNullByTeacherIdAsync(string teacherId)
+        {
+            var teacher = await this.teacherRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == teacherId && !x.IsDeleted);
+
+            if (teacher == null)
+            {
+                throw new ArgumentException($"There is no such teacher.");
+            }
+
+            teacher.ClassId = null;
+            await this.teacherRepository.SaveChangesAsync();
+        }
+
         public async Task<string> AddTeacherAsync(TeacherFormModel formModel)
         {
             var teacher = AutoMapperConfig.MapperInstance.Map<Teacher>(formModel);
@@ -166,8 +181,14 @@
                 throw new ArgumentException($"There is no such teacher.");
             }
 
+            teacher.ClassId = null;
             teacher.IsDeleted = true;
-            await this.userManager.RemoveFromRoleAsync(teacher.User, GlobalConstants.TeacherRoleName);
+
+            if (teacher.User != null)
+            {
+                await this.userManager.RemoveFromRoleAsync(teacher.User, GlobalConstants.TeacherRoleName);
+            }
+
             await this.teacherRepository.SaveChangesAsync();
         }
 
