@@ -25,6 +25,11 @@
             this.teacherService = teacherService;
         }
 
+        public async Task<int> GetTotalCountOfClassesAsync()
+            => await this.classRepository
+                .AllAsNoTracking()
+                .CountAsync();
+
         public async Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId)
             => await this.classRepository
                 .All()

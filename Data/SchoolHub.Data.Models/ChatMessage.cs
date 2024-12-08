@@ -16,8 +16,7 @@
         [Required]
         public string SenderName { get; set; }
 
-        public string RecipientId { get; set; }
-
+        [Required]
         public string ClassId { get; set; }
 
         [Required]
@@ -26,5 +25,8 @@
 
         [Required]
         public DateTime Timestamp { get; set; }
+
+        [Required]
+        public bool IsRead { get; set; } = false;
     }
 }

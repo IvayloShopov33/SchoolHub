@@ -12,6 +12,8 @@
     {
         Task<bool> IsStudentAsync(string userId);
 
+        Task<int> GetTotalCountOfStudentsAsync();
+
         Task<StudentFormModel> GetStudentByIdAsync(string id);
 
         Task<StudentFormModel> GetStudentByUserIdAsync(string userId);

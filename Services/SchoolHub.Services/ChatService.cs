@@ -43,5 +43,18 @@
                 .OrderBy(m => m.Timestamp)
                 .To<ChatMessagesFetchViewModel>()
                 .ToListAsync();
+
+        public async Task MarkMessagesAsRead(string classId)
+        {
+            var messages = this.chatRepository.All()
+                .Where(m => m.ClassId == classId && !m.IsRead);
+
+            foreach (var message in messages)
+            {
+                message.IsRead = true;
+            }
+
+            await this.chatRepository.SaveChangesAsync();
+        }
     }
 }

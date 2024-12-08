@@ -10,5 +10,7 @@
         Task AddChatMessageAsync(string classId, string senderId, string senderName, string message);
 
         Task<List<ChatMessagesFetchViewModel>> FetchMessageHistory(string classId);
+
+        Task MarkMessagesAsRead(string classId);
     }
 }

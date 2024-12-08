@@ -36,11 +36,25 @@
         }
 
         [Fact]
+        public async Task GetTotalCountOfClassesAsync_ShouldReturnAvailableClasses()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetTotalCountOfClassesAsync");
+            var classService = new ClassService(mockRepo, null);
+
+            // Act
+            var result = await classService.GetTotalCountOfClassesAsync();
+
+            // Assert
+            Assert.Equal(2, result);
+        }
+
+        [Fact]
         public async Task GetAllTeacherClassesBySchoolIdWithoutSetTeacherAsync_ShouldReturnAvailableClasses()
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetAllTeacherClassesBySchoolIdWithoutSetTeacherAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var result = await classService.GetAllTeacherClassesBySchoolIdAsync(this.schoolId);
@@ -56,7 +70,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetAllTeacherClassesBySchoolIdWithSetTeacherAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var result = await classService.GetAllTeacherClassesBySchoolIdAsync(this.schoolId, this.teacherId);
@@ -72,7 +86,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetAllClassesBySchoolIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var result = await classService.GetAllClassesBySchoolIdAsync(this.schoolId).ToListAsync();
@@ -89,7 +103,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetAllStudentsByClassIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var result = await classService.GetAllStudentsByClassIdAsync(this.firstClassId);
@@ -106,7 +120,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var firstResult = await classService.GetClassByIdAsync(this.firstClassId);
@@ -124,7 +138,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetTeacherClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var result = await classService.GetTeacherClassByIdAsync(this.firstClassId);
@@ -140,7 +154,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_GetSchoolIdByClassIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             var firstResult = await classService.GetSchoolIdByClassIdAsync(this.firstClassId);
@@ -158,7 +172,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_SetHomeroomTeacherIdByClassIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             // Act
             await classService.SetHomeroomTeacherIdByClassIdAsync(this.secondClassId, this.teacherId);
@@ -173,7 +187,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_SetHomeroomTeacherIdByClassIdAsyncException");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
             var thirdClassId = "3";
 
             // Act
@@ -184,14 +198,45 @@
         }
 
         [Fact]
+        public async Task SetHomeroomTeacherIdToNullByClassIdAsync_ShouldSetTeacherIdToNull()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_SetHomeroomTeacherIdToNullByClassId");
+            var classService = new ClassService(mockRepo, null);
+
+            // Act
+            await classService.SetHomeroomTeacherIdToNullByClassIdAsync(this.firstClassId);
+
+            // Assert
+            var updatedClass = mockRepo.All().FirstOrDefault(x => x.Id == this.firstClassId);
+            Assert.NotNull(updatedClass);
+            Assert.Null(updatedClass.HomeroomTeacherId);
+        }
+
+        [Fact]
+        public async Task SetHomeroomTeacherIdToNullByClassIdAsync_ShouldThrowArgumentExceptionWhenClassDoesNotExist()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_SetHomeroomTeacherIdToNullByClassId_Exception");
+            var classService = new ClassService(mockRepo, null);
+            var invalidClassId = "3";
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                classService.SetHomeroomTeacherIdToNullByClassIdAsync(invalidClassId));
+            Assert.Equal("There is no such class.", exception.Message);
+        }
+
+        [Fact]
         public async Task AddClassAsync_ShouldAddClass()
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_AddClassAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             var formModel = new ClassFormModel
             {
+                Id = Guid.NewGuid().ToString(),
                 Name = "Class C",
                 StartedOn = DateTime.UtcNow.AddMonths(-1),
                 EndingOn = DateTime.UtcNow.AddMonths(10),
@@ -213,7 +258,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_EditClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
             var classId = this.firstClassId;
             var updatedStartedOn = DateTime.UtcNow.AddMonths(-1);
@@ -241,7 +286,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_EditClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
             var thirdClassId = "3";
 
             // Act
@@ -256,16 +301,16 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_DeleteClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
 
-            var classId = this.firstClassId;
+            var classId = this.secondClassId;
             var deleteModel = new DeleteClassViewModel { Id = classId };
 
             // Act
             var result = classService.DeleteClassAsync(deleteModel);
 
             // Assert
-            var @class = mockRepo.AllAsNoTracking().FirstOrDefault(x => x.Id == this.firstClassId);
+            var @class = mockRepo.AllAsNoTracking().FirstOrDefault(x => x.Id == this.secondClassId);
             Assert.Null(@class);
         }
 
@@ -274,7 +319,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_EditClassByIdAsync");
-            var classService = new ClassService(mockRepo);
+            var classService = new ClassService(mockRepo, null);
             var deleteModel = new DeleteClassViewModel { Id = "3" };
 
             // Act
@@ -282,6 +327,29 @@
 
             // Assert
             Assert.True(result.IsFaulted);
+        }
+
+        [Fact]
+        public async Task DeleteClassAsync_ShouldHandleNonNullHomeroomTeacherId()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockClassRepositoryAsync("TestDb_DeleteClassAsync_WithHomeroomTeacher");
+            var mockTeacherService = new Mock<ITeacherService>();
+            var classService = new ClassService(mockRepo, mockTeacherService.Object);
+
+            var classId = this.firstClassId;
+
+            // Act
+            var deleteModel = new DeleteClassViewModel { Id = classId };
+            await classService.DeleteClassAsync(deleteModel);
+
+            // Assert
+            var deletedClass = mockRepo.AllAsNoTracking().FirstOrDefault(x => x.Id == classId);
+            Assert.Null(deletedClass);
+
+            mockTeacherService.Verify(
+                x => x.SetClassIdToNullByTeacherIdAsync(It.IsAny<string>()),
+                Times.Once);
         }
 
         private async Task<IDeletableEntityRepository<Class>> GetMockClassRepositoryAsync(string dbName)

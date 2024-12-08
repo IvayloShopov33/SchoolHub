@@ -21,8 +21,7 @@
         {
             await this.chatService.AddChatMessageAsync(classId, senderId, senderName, message);
 
-            // Notify all users in the group
-            await this.Clients.Group(classId).SendAsync("ReceiveMessage", senderName, message, DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
+            await this.Clients.Group(classId).SendAsync("ReceiveMessage", senderName, message, DateTime.UtcNow.ToString(DateTimeFormat), false);
         }
 
         public async Task JoinClass(string classId)
@@ -38,7 +37,26 @@
         public async Task FetchMessageHistory(string classId)
         {
             var messages = await this.chatService.FetchMessageHistory(classId);
+
+            // Mark messages as read
+            await this.chatService.MarkMessagesAsRead(classId);
+
+            // Notify all clients in the group about read status
+            await this.Clients.Group(classId).SendAsync("MarkAsRead", classId);
+
             await this.Clients.Caller.SendAsync("FetchMessageHistory", messages);
+        }
+
+        public async Task Typing(string classId, string senderName)
+        {
+            await this.Clients.Group(classId).SendAsync("ShowTypingIndicator", senderName);
+        }
+
+        public async Task MarkAsRead(string classId)
+        {
+            await this.chatService.MarkMessagesAsRead(classId);
+
+            await this.Clients.Group(classId).SendAsync("MarkAsRead", classId);
         }
     }
 }

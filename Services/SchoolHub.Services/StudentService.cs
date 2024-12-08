@@ -34,6 +34,11 @@
         public async Task<bool> IsStudentAsync(string userId)
             => await this.studentRepository.AllAsNoTracking().AnyAsync(x => x.UserId == userId && !x.IsDeleted);
 
+        public async Task<int> GetTotalCountOfStudentsAsync()
+            => await this.studentRepository
+                .AllAsNoTracking()
+                .CountAsync();
+
         public async Task<StudentFormModel> GetStudentByIdAsync(string id)
             => await this.studentRepository
                 .All()

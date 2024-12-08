@@ -68,6 +68,16 @@ html {
     background-color: #dc3545;
 }
 
+.read-message {
+    background-color: #f0f8ff; /* Light blue for read messages */
+    font-style: italic; /* Italics for read messages */
+}
+
+.unread-message {
+    background-color: #ffffff; /* Default background for unread */
+    font-style: normal; /* Normal style for unread */
+}
+
 button.accept-policy {
     font-size: 1rem;
     line-height: inherit;

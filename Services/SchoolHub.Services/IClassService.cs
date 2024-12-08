@@ -11,6 +11,8 @@
 
     public interface IClassService
     {
+        Task<int> GetTotalCountOfClassesAsync();
+
         Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId);
 
         Task<List<TeacherClassFormModel>> GetAllTeacherClassesBySchoolIdAsync(string schoolId, string homeroomTeacherId);

@@ -86,6 +86,20 @@
         }
 
         [Fact]
+        public async Task GetTotalCountOfStudentsAsync_ShouldReturnAvailableStudents()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockStudentRepositoryAsync("TestDb_GetTotalCountOfStudentsAsync");
+            var studentService = new StudentService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+
+            // Act
+            var result = await studentService.GetTotalCountOfStudentsAsync();
+
+            // Assert
+            Assert.Equal(2, result);
+        }
+
+        [Fact]
         public async Task GetStudentByIdAsync_ShouldReturnCorrectStudent()
         {
             // Arrange

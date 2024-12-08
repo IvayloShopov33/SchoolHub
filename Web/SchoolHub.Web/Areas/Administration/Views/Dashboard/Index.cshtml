@@ -1,7 +1,76 @@
-﻿@{
-    this.ViewData["Title"] = "Admin dashboard";
+﻿@using SchoolHub.Services
+@inject ISchoolService schoolService
+@inject IStudentService studentService
+@inject IClassService classService
+
+@{
+    this.ViewData["Title"] = "Admin Dashboard";
+
+    var allSchools = await this.schoolService.AllAsync();
+    var teachersTotalCount = 0;
+
+    foreach (var school in allSchools)
+    {
+        teachersTotalCount += school.TeachersCount;
+    }
 }
 
-<h1>@this.ViewData["Title"]</h1>
+<h1 class="my-4 text-center">@this.ViewData["Title"]</h1>
 
-<a asp-area="" asp-controller="School" asp-action="Add" class="btn btn-info">Add a School</a>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <a asp-area="" asp-controller="School" asp-action="Add" class="btn btn-primary btn-lg w-100">
+                <i class="fas fa-plus-circle"></i> Add a School
+            </a>
+        </div>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow-sm">
+                <a asp-area="" asp-controller="School" asp-action="Index" class="text-decoration-none">
+                    <div class="card-body">
+                        <i class="fas fa-school fa-3x mb-3"></i>
+                        <h5>Total Schools</h5>
+                        <h2>@allSchools.Count</h2>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-secondary text-white shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+                    <h5>Total Teachers</h5>
+                    <h2>@teachersTotalCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                    <h5>Total Students</h5>
+                    <h2>@await this.studentService.GetTotalCountOfStudentsAsync()</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x mb-3"></i>
+                    <h5>Total Classes</h5>
+                    <h2>@await this.classService.GetTotalCountOfClassesAsync()</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}

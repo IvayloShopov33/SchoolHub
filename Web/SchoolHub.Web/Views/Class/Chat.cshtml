@@ -22,12 +22,16 @@
 }
 
 <h2>@ViewBag.Class's Class Chat</h2>
-<div id="chatWindow">
+<div id="chatWindow" class="chat-window">
     <!-- Messages will appear here -->
 </div>
 
-<input type="text" id="messageInput" placeholder="Type a message..." />
-<button id="sendButton">Send</button>
+<div id="typingIndicator" class="text-muted"></div>
+
+<div class="input-group mt-3">
+    <input type="text" id="messageInput" class="form-control" placeholder="Type a message..." />
+    <button id="sendButton" class="btn btn-primary">Send</button>
+</div>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.15/signalr.min.js"></script>
@@ -43,47 +47,80 @@
         connection.on("FetchMessageHistory", function (messages) {
             const chatWindow = document.getElementById("chatWindow");
             chatWindow.innerHTML = ""; // Clear existing messages
-        
+
             messages.forEach(msg => {
-                const msgDiv = document.createElement("div");
-        
-                const senderName = document.createElement("strong");
-                senderName.textContent = `${msg.senderName}: `;
-                msgDiv.appendChild(senderName);
-        
-                const messageContent = document.createTextNode(`"${msg.message}" `);
-                msgDiv.appendChild(messageContent);
-        
-                const timestamp = document.createElement("small");
-                timestamp.textContent = msg.timestamp;
-                msgDiv.appendChild(timestamp);
-        
-                chatWindow.appendChild(msgDiv);
+                appendMessageToChat(msg.senderName, msg.message, msg.timestamp, msg.isRead);
             });
         });
-        
+
         // Receive group messages
-        connection.on("ReceiveMessage", function (senderName, message, timestamp) {
+        connection.on("ReceiveMessage", function (senderName, message, timestamp, isRead) {
+            appendMessageToChat(senderName, message, timestamp, isRead);
+
+            connection.invoke("MarkAsRead", classId)
+                .catch(err => console.error(err.toString()));
+        });
+
+        // Show typing indicator
+        connection.on("ShowTypingIndicator", function (typingUserName) {
+            const typingIndicator = document.getElementById("typingIndicator");
+
+            // Only show the typing indicator if it's someone else typing
+            typingIndicator.textContent = `${typingUserName} is typing...`;
+            clearTimeout(typingIndicator.timeout); // Clear previous timeout
+            typingIndicator.timeout = setTimeout(() => typingIndicator.textContent = "", 2000);
+        });
+
+        function appendMessageToChat(senderName, message, timestamp, isRead) {
             const chatWindow = document.getElementById("chatWindow");
             const msgDiv = document.createElement("div");
-        
+
             const sender = document.createElement("strong");
             sender.textContent = `${senderName}: `;
             msgDiv.appendChild(sender);
-        
-            const content = document.createTextNode(`"${message}" `);
+
+            const content = document.createTextNode(`${message} `);
             msgDiv.appendChild(content);
-        
+
             const time = document.createElement("small");
-            time.textContent = timestamp;
+            time.classList.add("text-muted");
+            time.textContent = `(${timestamp}) `;
             msgDiv.appendChild(time);
-        
+
+            if (isRead) {
+                const readReceipt = document.createElement("strong");
+                readReceipt.classList.add("read-message");
+                readReceipt.textContent = " (Read)";
+                msgDiv.appendChild(readReceipt);
+                msgDiv.classList.add("read-message");
+            }
+            else {
+                msgDiv.classList.add("unread-message");
+            }
+
             chatWindow.appendChild(msgDiv);
-        });
+        }
 
         connection.start().then(function () {
             connection.invoke("JoinClass", classId);
-            connection.invoke("FetchMessageHistory", classId);
+            connection.invoke("FetchMessageHistory", classId)
+                .then(() => {
+                    connection.invoke("MarkAsRead", classId)
+                        .catch(err => console.error(err.toString()));
+                });
+        });
+
+        // Notify server that user is typing
+        const typingInput = document.getElementById("messageInput");
+        let typingTimeout;
+
+        typingInput.addEventListener("input", function () {
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                connection.invoke("Typing", classId, senderName).catch(function (err) {
+                    console.error(err.toString());
+                });
+            }, 300); // Delay sending typing notification to reduce spam
         });
 
         // Send a group message
@@ -101,6 +138,19 @@
                 .catch(function (err) {
                     console.error(err.toString());
                 });
+        });
+
+        connection.on("MarkAsRead", function (classId) {
+            const chatWindow = document.getElementById("chatWindow");
+            Array.from(chatWindow.children).forEach((msgDiv) => {
+                if (msgDiv.classList.contains("unread-message")) {
+                    msgDiv.classList.remove("unread-message");
+                    msgDiv.classList.add("read-message");
+                    const read = document.createElement("strong");
+                    read.textContent = ` (Read)`;
+                    msgDiv.appendChild(read);
+                }
+            });
         });
     </script>
 }

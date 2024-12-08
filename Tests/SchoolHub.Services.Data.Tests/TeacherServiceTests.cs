@@ -237,6 +237,36 @@
         }
 
         [Fact]
+        public async Task SetClassIdToNullByHomeroomTeacherIdAsync_ShouldSetClassIdToNull()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdToNullByHomeroomTeacherIdAsync");
+            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+
+            // Act
+            await teacherService.SetClassIdToNullByTeacherIdAsync(this.firstTeacherId);
+
+            // Assert
+            var updatedClass = mockRepo.All().FirstOrDefault(x => x.Id == this.firstTeacherId);
+            Assert.NotNull(updatedClass);
+            Assert.Null(updatedClass.ClassId);
+        }
+
+        [Fact]
+        public async Task SetClassIdToNullByHomeroomTeacherIdAsync_ShouldThrowArgumentExceptionWhenTeacherDoesNotExist()
+        {
+            // Arrange
+            var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdToNullByHomeroomTeacherIdAsync_Exception");
+            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var invalidTeacherId = "3";
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                teacherService.SetClassIdToNullByTeacherIdAsync(invalidTeacherId));
+            Assert.Equal("There is no such teacher.", exception.Message);
+        }
+
+        [Fact]
         public async Task AddTeacherAsync_ShouldAddNewTeacher()
         {
             // Arrange
