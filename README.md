@@ -36,6 +36,8 @@ The system is built using the ASP.NET MVC framework with a layered architecture,
 
 **XUnit & Moq**: Testing framework to ensure reliability.
 
+**SignalR**: Sending real-time chat messages between students and their homeroom teacher
+
 
 ## Features 🛠️
 ### Students
