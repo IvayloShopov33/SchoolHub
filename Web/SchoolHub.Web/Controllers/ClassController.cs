@@ -85,7 +85,10 @@
 
             this.ViewBag.ClassId = classId;
             this.ViewBag.Class = classById.Name;
-            this.ViewBag.Teacher = teacherById.FullName;
+            if (teacherById != null)
+            {
+                this.ViewBag.Teacher = teacherById.FullName;
+            }
 
             this.ViewBag.UserId = this.User.GetId();
 

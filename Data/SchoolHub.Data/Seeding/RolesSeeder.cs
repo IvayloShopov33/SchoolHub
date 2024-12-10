@@ -12,19 +12,16 @@
 
     internal class RolesSeeder : ISeeder
     {
-        private const string AdminEmail = "admin@crs.com";
-
         public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
-            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-            await SeedRoleAsync(userManager, roleManager, GlobalConstants.AdministratorRoleName);
-            await SeedRoleAsync(userManager, roleManager, GlobalConstants.TeacherRoleName);
-            await SeedRoleAsync(userManager, roleManager, GlobalConstants.StudentRoleName);
+            await SeedRoleAsync(roleManager, GlobalConstants.AdministratorRoleName);
+            await SeedRoleAsync(roleManager, GlobalConstants.TeacherRoleName);
+            await SeedRoleAsync(roleManager, GlobalConstants.StudentRoleName);
         }
 
-        private static async Task SeedRoleAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, string roleName)
+        private static async Task SeedRoleAsync(RoleManager<ApplicationRole> roleManager, string roleName)
         {
             var role = await roleManager.FindByNameAsync(roleName);
             if (role == null)
@@ -34,15 +31,6 @@
                 {
                     throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
                 }
-
-                var user = new ApplicationUser
-                {
-                    Email = AdminEmail,
-                    UserName = AdminEmail,
-                };
-
-                await userManager.CreateAsync(user, "admin21");
-                await userManager.AddToRoleAsync(user, roleName);
             }
         }
     }

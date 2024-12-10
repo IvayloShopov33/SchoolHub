@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="form-group text-center mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Assign Class</button>
+                        <button type="submit" id="assignButton" class="btn btn-primary btn-lg">Assign Class</button>
                     </div>
                 </form>
             </div>
@@ -51,8 +51,25 @@
     <script>
         document.getElementById("classDropdown").addEventListener("change", function () {
             const selectedOption = this.options[this.selectedIndex];
-            document.getElementById("startDate").value = selectedOption.dataset.start || "";
-            document.getElementById("endDate").value = selectedOption.dataset.end || "";
+            const assignButton = document.getElementById("assignButton");
+            const startDateInput = document.getElementById("startDate");
+            const endDateInput = document.getElementById("endDate");
+
+            if (selectedOption && selectedOption.value !== "") {
+                assignButton.disabled = false; // Enable button when a valid option is selected
+                startDateInput.value = selectedOption.dataset.start || "";
+                endDateInput.value = selectedOption.dataset.end || "";
+            } else {
+                assignButton.disabled = true; // Disable button when no valid option is selected
+                startDateInput.value = "";
+                endDateInput.value = "";
+            }
+        });
+
+
+        window.addEventListener("DOMContentLoaded", function () {
+            const assignButton = document.getElementById("assignButton");
+            assignButton.disabled = true; // Ensure button starts disabled
         });
     </script>
 }

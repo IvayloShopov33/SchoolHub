@@ -7,7 +7,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
-
+    using Microsoft.Extensions.DependencyInjection;
     using SchoolHub.Common;
     using SchoolHub.Data.Common.Repositories;
     using SchoolHub.Data.Models;
@@ -19,12 +19,14 @@
         private readonly IDeletableEntityRepository<Teacher> teacherRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IServiceProvider serviceProvider;
 
-        public TeacherService(IDeletableEntityRepository<Teacher> teacherRepository, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public TeacherService(IDeletableEntityRepository<Teacher> teacherRepository, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IServiceProvider serviceProvider)
         {
             this.teacherRepository = teacherRepository;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task<bool> IsTeacherAsync(string userId)
@@ -179,6 +181,12 @@
             if (teacher == null)
             {
                 throw new ArgumentException($"There is no such teacher.");
+            }
+
+            if (teacher.ClassId != null)
+            {
+                var classService = this.serviceProvider.GetRequiredService<IClassService>();
+                await classService.SetHomeroomTeacherIdToNullByClassIdAsync(teacher.ClassId);
             }
 
             teacher.ClassId = null;

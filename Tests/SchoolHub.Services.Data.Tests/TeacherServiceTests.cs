@@ -17,7 +17,6 @@
     using SchoolHub.Data.Common.Repositories;
     using SchoolHub.Data.Models;
     using SchoolHub.Services.Mapping;
-    using SchoolHub.Web.ViewModels.Student;
     using SchoolHub.Web.ViewModels.Teacher;
 
     using Xunit;
@@ -49,7 +48,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_IsTeacherAsync");
-            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await teacherService.IsTeacherAsync(this.userId);
@@ -63,7 +62,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_IsTeacherAsyncInvalidUserId");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.IsTeacherAsync("invalidUserId");
@@ -77,7 +76,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetTeacherByIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetTeacherByIdAsync(this.firstTeacherId);
@@ -93,7 +92,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetTeacherByUserIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetTeacherByUserIdAsync(this.userId);
@@ -109,7 +108,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetTeacherIdByUserIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetTeacherIdByUserIdAsync(this.userId);
@@ -123,7 +122,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetSchoolIdByTeacherIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetSchoolIdByTeacherIdAsync(this.firstTeacherId);
@@ -137,7 +136,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetSubjectIdByTeacherIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetSubjectIdByTeacherIdAsync(this.secondTeacherId);
@@ -151,7 +150,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_GetAllTeachersBySchoolIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.GetAllTeachersBySchoolIdAsync(this.schoolId);
@@ -166,7 +165,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdByHomeroomTeacherIdAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             await service.SetClassIdByHomeroomTeacherIdAsync(this.firstTeacherId, this.classId);
@@ -181,7 +180,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdByHomeroomTeacherIdAsyncException");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var thirdTeacherId = "3";
 
             // Act
@@ -196,7 +195,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync($"TestDb_SetTeacherUserByFullNameAndBirthDateAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.SetTeacherUserByFullNameAndBirthDateAsync(this.userId, "Malone Cole", new DateTime(1994, 07, 15));
@@ -212,7 +211,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetTeacherUserByFullNameAndBirthDateAsyncInvalidTeacher");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             var result = await service.SetTeacherUserByFullNameAndBirthDateAsync(this.userId, "Mike Swift", new DateTime(2000, 05, 05));
@@ -226,7 +225,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetTeacherUserByFullNameAndBirthDateAsyncInvalidUserId");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var secondUserId = "2";
 
             // Act
@@ -241,7 +240,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdToNullByHomeroomTeacherIdAsync");
-            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             await teacherService.SetClassIdToNullByTeacherIdAsync(this.firstTeacherId);
@@ -257,7 +256,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_SetClassIdToNullByHomeroomTeacherIdAsync_Exception");
-            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var teacherService = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var invalidTeacherId = "3";
 
             // Act & Assert
@@ -271,7 +270,7 @@
         {
             // Arrange
             var teacherRepo = await this.GetMockTeacherRepositoryAsync("TestDb_AddTeacherAsync");
-            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(teacherRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var model = new TeacherFormModel { FullName = "New Teacher", BirthDate = DateTime.Now, SubjectId = 1, SchoolId = this.schoolId };
 
             // Act
@@ -288,7 +287,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_EditTeacherAsync");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             var formModel = new TeacherFormModel { FullName = "New Name", BirthDate = new DateTime(1999, 06, 07), SchoolId = this.schoolId, ClassId = this.classId };
 
@@ -305,7 +304,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_EditTeacherAsyncException");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var thirdTeacherId = "3";
 
             // Act
@@ -320,7 +319,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_DeleteTeacherAsync");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
 
             // Act
             await service.DeleteTeacherAsync(new DeleteTeacherViewModel { Id = this.firstTeacherId });
@@ -336,7 +335,7 @@
         {
             // Arrange
             var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_DeleteTeacherAsyncException");
-            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object);
+            var service = new TeacherService(mockRepo, this.userManagerMock.Object, this.signInManagerMock.Object, null);
             var thirdTeacherId = "3";
 
             // Act
@@ -345,6 +344,42 @@
             // Assert
             Assert.True(result.IsFaulted);
             this.userManagerMock.Verify(u => u.RemoveFromRoleAsync(It.IsAny<ApplicationUser>(), GlobalConstants.TeacherRoleName), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteTeacherAsync_ShouldInvokeClassServiceWhenClassIdIsNotNull()
+        {
+            // Arrange
+            var teacherId = this.secondTeacherId;
+            var mockRepo = await this.GetMockTeacherRepositoryAsync("TestDb_DeleteTeacherAsync_ClassService");
+            var mockServiceProvider = new Mock<IServiceProvider>();
+            var mockClassService = new Mock<IClassService>();
+            mockServiceProvider
+                .Setup(sp => sp.GetService(typeof(IClassService)))
+                .Returns(mockClassService.Object);
+
+            var mockUserManager = this.userManagerMock;
+            var service = new TeacherService(mockRepo, mockUserManager.Object, this.signInManagerMock.Object, mockServiceProvider.Object);
+
+            var deleteTeacherModel = new DeleteTeacherViewModel
+            {
+                Id = teacherId,
+            };
+
+            // Act
+            await service.DeleteTeacherAsync(deleteTeacherModel);
+
+            // Assert
+            var deletedTeacher = mockRepo.AllAsNoTracking().FirstOrDefault(x => x.Id == teacherId);
+            Assert.Null(deletedTeacher);
+
+            mockClassService.Verify(
+                cs => cs.SetHomeroomTeacherIdToNullByClassIdAsync(It.IsAny<string>()),
+                Times.Once);
+
+            mockServiceProvider.Verify(
+                sp => sp.GetService(typeof(IClassService)),
+                Times.Once);
         }
 
         private Mock<UserManager<ApplicationUser>> MockUserManager()
@@ -453,6 +488,7 @@
                     FullName = "Malone Cole",
                     BirthDate = new DateTime(1994, 07, 15),
                     SchoolId = this.schoolId,
+                    ClassId = this.classId,
                     SubjectId = 2,
                 },
             });

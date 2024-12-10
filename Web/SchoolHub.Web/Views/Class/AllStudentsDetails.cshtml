@@ -32,7 +32,7 @@
             }
             else
             {
-                @if (students.Any(x => x.Username == this.User.Identity.Name) || classById.HomeroomTeacherId == teacherId)
+                @if (!this.User.IsAdmin() && (students.Any(x => x.Username == this.User.Identity.Name) || classById.HomeroomTeacherId == teacherId))
                 {
                     <div class="form-group text-center mt-4">
                         <a asp-controller="Class" asp-action="Chat" asp-route-classId="@Model.Id" class="btn btn-info mb-2">Class Chat</a>
@@ -64,7 +64,7 @@
                                             <a asp-controller="Student" asp-action="Statistics" asp-route-studentId="@student.Id" class="btn btn-outline-success btn-sm">View Statistics</a>
                                             <a asp-controller="Absence" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-info btn-sm">View Absences</a>
                                             <a asp-controller="Grade" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-primary btn-sm">View Grades</a>
-                                            <a asp-controller="Remark" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-secondary btn-sm mt-2">View Remarks</a>
+                                            <a asp-controller="Remark" asp-action="Index" asp-route-studentId="@student.Id" class="btn btn-outline-secondary btn-sm">View Remarks</a>
                                         }
 
                                         @if (this.User.IsAdmin() || (User.Identity.IsAuthenticated && User.Identity.Name == student.Username))
