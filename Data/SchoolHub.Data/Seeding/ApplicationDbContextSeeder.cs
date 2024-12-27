@@ -30,6 +30,13 @@
                               new SettingsSeeder(),
                               new CategoriesSeeder(),
                               new SubjectsSeeder(),
+                              new SchoolsSeeder(),
+                              new TeachersSeeder(),
+                              new ClassesSeeder(),
+                              new StudentsSeeder(),
+                              new GradesSeeder(),
+                              new AbsencesSeeder(),
+                              new RemarksSeeder(),
                           };
 
             foreach (var seeder in seeders)
