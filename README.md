@@ -58,4 +58,4 @@ Assign roles and permissions.
 Access detailed reports and insights.
 
 ## License 📜
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://github.com/IvayloShopov33/SchoolHub/blob/master/LICENSE).
